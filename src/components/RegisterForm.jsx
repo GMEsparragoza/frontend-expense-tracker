@@ -10,7 +10,8 @@ export const RegisterForm = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmitForm = async () => {
+    const handleSubmitForm = async (e) => {
+        e.preventDefault();
         setError("");
         setLoading(true);
         if (!username || !email || !password || !confirmPassword) {
@@ -34,7 +35,7 @@ export const RegisterForm = () => {
                 setLoading(false);
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000)
+                }, 300)
             })
             .catch(error => {
                 if (error.response) {
@@ -50,7 +51,7 @@ export const RegisterForm = () => {
 
     return (
         <>
-            <form onSubmit={() => handleSubmitForm()} className="w-full max-w-[500px] mx-auto">
+            <form onSubmit={(e) => handleSubmitForm(e)} className="w-full max-w-[500px] mx-auto">
                 <h2 className='text-2xl font-medium text-white mb-5 text-center'>Sign Up</h2>
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">Username</label>
