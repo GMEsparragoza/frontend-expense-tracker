@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import {FRONT_API_URL} from '../utils/config'
+import {BACKEND_API_URL} from '../utils/config'
 
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export const LoginForm = () => {
             return;
         }
 
-        axios.post(`${FRONT_API_URL}/api/signin`, {
+        axios.post(`${BACKEND_API_URL}/api/signin`, {
             email,
             password
         }, { withCredentials: true })

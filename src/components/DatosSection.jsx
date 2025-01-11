@@ -2,14 +2,14 @@ import React, { useContext} from 'react';
 import { AuthContext } from '../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {FRONT_API_URL} from '../utils/config'
+import {BACKEND_API_URL} from '../utils/config'
 
 export const DatosSection = () => {
     const { user, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        axios.post(`${FRONT_API_URL}/api/logout`)
+        axios.post(`${BACKEND_API_URL}/api/logout`)
             .then(() => {
                 setUser(null); // Limpiar el estado del usuario
                 navigate('/login'); // Redirigir a la página de inicio de sesión

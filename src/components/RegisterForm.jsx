@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import {FRONT_API_URL} from '../utils/config'
+import {BACKEND_API_URL} from '../utils/config'
 
 export const RegisterForm = () => {
     const [username, setUsername] = useState("");
@@ -25,7 +25,7 @@ export const RegisterForm = () => {
             return;
         }
 
-        await axios.post(`${FRONT_API_URL}/api/signup`, {
+        await axios.post(`${BACKEND_API_URL}/api/signup`, {
             username,
             email,
             password,
