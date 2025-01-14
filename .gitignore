@@ -6,6 +6,7 @@ build/
 
 # Ignorar archivos de entorno
 .env
+.env.local
 
 # Ignorar logs y temporales
 *.log

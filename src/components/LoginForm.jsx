@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import {BACKEND_API_URL} from '../utils/config'
+import { REACT_APP_BACKEND_API_URL } from '../utils/config'
+import { useAlert } from '../utils/AlertContext'
 
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { mostrarAlerta } = useAlert();
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
@@ -17,16 +19,20 @@ export const LoginForm = () => {
             setLoading(false);
             return;
         }
-
-        axios.post(`${BACKEND_API_URL}/api/signin`, {
+        axios.post(`${REACT_APP_BACKEND_API_URL}/api/signin`, {
             email,
             password
         }, { withCredentials: true })
-            .then(response => {
+            .then(() => {
                 console.log('Inicio de Sesion Exitoso:');
+                mostrarAlerta({
+                    tipo: true,
+                    titulo: "Sesion Iniciada",
+                    parrafo: "Se inicio sesion correctamente"
+                })
                 setTimeout(() => {
                     window.location.reload();
-                }, 200)
+                }, 1200);
             })
             .catch(error => {
                 if (error.response) {
@@ -40,6 +46,11 @@ export const LoginForm = () => {
                     setError(error.message);
                 }
                 setLoading(false);
+                mostrarAlerta({
+                    tipo: false,
+                    titulo: "Error al Iniciar Sesion",
+                    parrafo: "No se pudo iniciar sesion"
+                })
             });
     }
 

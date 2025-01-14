@@ -1,5 +1,5 @@
 import React from 'react';
-import { DatosSection } from '../components/DatosSection';
+import { DatosSection } from '../components/Perfiles/DatosSection';
 
 const Perfil = () => {
     
@@ -7,6 +7,7 @@ const Perfil = () => {
     return (
         <>
             <DatosSection />
+            
         </>
     );
 };

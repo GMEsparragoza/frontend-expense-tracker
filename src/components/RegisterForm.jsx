@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import {BACKEND_API_URL} from '../utils/config'
+import {REACT_APP_BACKEND_API_URL} from '../utils/config'
+import {useAlert} from '../utils/AlertContext'
 
 export const RegisterForm = () => {
     const [username, setUsername] = useState("");
@@ -9,6 +10,7 @@ export const RegisterForm = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const {mostrarAlerta} = useAlert();
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
@@ -24,8 +26,13 @@ export const RegisterForm = () => {
             setLoading(false);
             return;
         }
+        if (password.length < 6) {
+            setError("The password must contain at least 6 characters");
+            setLoading(false);
+            return;
+        }
 
-        await axios.post(`${BACKEND_API_URL}/api/signup`, {
+        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/signup`, {
             username,
             email,
             password,
@@ -33,9 +40,15 @@ export const RegisterForm = () => {
             .then(response => {
                 console.log('Registro exitoso:', response.data.message);
                 setLoading(false);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 300)
+                mostrarAlerta({
+                    tipo: true,
+                    titulo: "Registro Exitoso",
+                    parrafo: "Usuario registrado correctamente"
+                })
+                setUsername("");
+                setEmail("");
+                setPassword("");
+                setConfirmPassword("");
             })
             .catch(error => {
                 if (error.response) {
@@ -46,6 +59,11 @@ export const RegisterForm = () => {
                     console.error('Error general:', error.message);
                 }
                 setLoading(false);
+                mostrarAlerta({
+                    tipo: false,
+                    titulo: "No se pudo completar el Registro",
+                    parrafo: "Hubo un problema al completar el registro"
+                })
             });
     }
 

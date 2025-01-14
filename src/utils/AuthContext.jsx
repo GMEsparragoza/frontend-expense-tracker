@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import {BACKEND_API_URL} from './config'
+import {REACT_APP_BACKEND_API_URL} from './config'
 
 export const AuthContext = createContext();
 
@@ -9,14 +9,15 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${BACKEND_API_URL}/api/auth`)
+        axios.get(`${REACT_APP_BACKEND_API_URL}/api/auth`)
             .then(response => {
                 setUser(response.data.user);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch(error => {
                 setUser(null);
                 setLoading(false);
+                console.error(error)
             });
     }, []);
 
