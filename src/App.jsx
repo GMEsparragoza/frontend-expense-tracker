@@ -10,6 +10,7 @@ import axios from 'axios'
 import Perfil from './pages/PerfilPage';
 import { AlertProvider } from './utils/AlertContext';
 import Alerta from './components/Alerta';
+import ResetPassword from './pages/ResetPassword';
 
 axios.defaults.withCredentials = true;
 
@@ -23,6 +24,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
             <Route
               path="/dashboard"
               element={

@@ -45,6 +45,9 @@ export const RegisterForm = () => {
                     titulo: "Registro Exitoso",
                     parrafo: "Usuario registrado correctamente"
                 })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
                 setUsername("");
                 setEmail("");
                 setPassword("");

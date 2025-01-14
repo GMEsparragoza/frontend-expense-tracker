@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { REACT_APP_BACKEND_API_URL } from '../utils/config'
 import { useAlert } from '../utils/AlertContext'
+import { useNavigate } from 'react-router-dom';
 
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -9,8 +10,9 @@ export const LoginForm = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const { mostrarAlerta } = useAlert();
+    const navigate = useNavigate();
 
-    const handleSubmitForm = async (e) => {
+    const handleSubmitForm = (e) => {
         e.preventDefault();
         setError("");
         setLoading(true);
@@ -30,6 +32,9 @@ export const LoginForm = () => {
                     titulo: "Sesion Iniciada",
                     parrafo: "Se inicio sesion correctamente"
                 })
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             })
             .catch(error => {
                 if (error.response) {
@@ -43,14 +48,8 @@ export const LoginForm = () => {
                     setError(error.message);
                 }
                 setLoading(false);
-                mostrarAlerta({
-                    tipo: false,
-                    titulo: "Error al Iniciar Sesion",
-                    parrafo: "No se pudo iniciar sesion"
-                })
             });
     }
-
 
     return (
         <>
@@ -72,6 +71,7 @@ export const LoginForm = () => {
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your password" />
                 </div>
+                <button type='button' onClick={() => navigate('/reset-password')} className='w-full text-lightBlue py-2 font-medium rounded mt-6 transition-colors'>Forgot your password?</button>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign In</button>
                 {error && <p className='text-red mt-2 text-center'>{error}</p>}
                 {loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
