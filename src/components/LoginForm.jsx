@@ -30,9 +30,6 @@ export const LoginForm = () => {
                     titulo: "Sesion Iniciada",
                     parrafo: "Se inicio sesion correctamente"
                 })
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1200);
             })
             .catch(error => {
                 if (error.response) {
