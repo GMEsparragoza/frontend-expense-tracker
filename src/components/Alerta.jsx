@@ -19,7 +19,7 @@ const Alerta = () => {
         <>
             {alerta.activa && (
                 <div
-                    className={`fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 z-20`}
+                    className={`fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 z-50`}
                 >
                     <div
                         className={`max-w-md w-full p-8 rounded-lg shadow-xl flex flex-col items-center space-y-6 ${bgColor} text-white`}

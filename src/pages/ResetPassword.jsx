@@ -132,7 +132,7 @@ const ResetPassword = () => {
                                 <input
                                     type="number"
                                     onChange={(e) => setUserCode(e.target.value)}
-                                    className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
+                                    className="appearance-none -webkit-appearance-none focus:outline-none w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter the verification code"
                                 />
                             </div>

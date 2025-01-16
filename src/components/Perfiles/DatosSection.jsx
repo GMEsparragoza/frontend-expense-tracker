@@ -121,13 +121,14 @@ export const DatosSection = () => {
 
     return (
         <>
-            <div className='min-h-screen bg-darkSlate text-white flex flex-col items-center mt-20 p-8'>
-                <div className='w-5/6 sm:w-3/4 lg:w-2/4 bg-darkBlue rounded-xl shadow-lg p-6 mt-8 relative'>
-                    <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>User profile</h1>
-                    <div className='flex items-center'>
+
+            <div className='w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue rounded-t-xl shadow-lg p-6 mt-8 relative'>
+                <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>User profile</h1>
+                <div className='flex items-center justify-start w-full'>
+                    <div className='relative flex flex-col items-start justify-center w-32 h-32 mr-6 cursor-pointer'>
                         <div
-                            className='w-32 h-32 mr-6 relative cursor-pointer'
-                            onClick={() => setImageMenu(true)}
+                            className='w-full h-full relative cursor-pointer'
+                            onClick={() => setImageMenu(true)} // Activar el menú de edición
                         >
                             {user.imageLink ? (
                                 <img
@@ -138,28 +139,29 @@ export const DatosSection = () => {
                             ) : (
                                 <i className='bx bxs-user-circle text-9xl text-lightBlue'></i>
                             )}
+                            {/* Superposición de editar imagen */}
                             <div className='rounded-full absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity'>
                                 <i className='bx bxs-pencil text-white text-3xl'></i>
                             </div>
                         </div>
-                        <div>
-                            <h2 className='text-3xl font-semibold mb-2'>{user.username}</h2>
-                            <p className='text-xl text-gray'>{user.email}</p>
-                            <div className='flex space-x-2'>
-                                <p className='text-lg text-gray'>{user?.name || 'No name entered'}</p>
-                                <p className='text-lg text-gray'>{user?.lastName || 'No last name entered'}</p>
-                            </div>
+                    </div>
+                    <div className='flex flex-col items-center text-center'>
+                        <h2 className='text-3xl font-semibold mb-2'>{user.username}</h2>
+                        <p className='text-xl text-gray'>{user.email}</p>
+                        <div className='flex space-x-2'>
+                            <p className='text-lg text-gray'>{user?.name || 'No name entered'}</p>
+                            <p className='text-lg text-gray'>{user?.lastName || 'No last name entered'}</p>
                         </div>
                     </div>
-                    <div className='flex justify-center my-4'>
-                        <button onClick={() => setInformationMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
-                            Edit Information
-                        </button>
-                        <button onClick={() => setPasswordMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
-                            Change Password
-                        </button>
-                        <button onClick={handleLogout} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>Log Out</button>
-                    </div>
+                </div>
+                <div className='flex justify-center my-4'>
+                    <button onClick={() => setInformationMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                        Edit Information
+                    </button>
+                    <button onClick={() => setPasswordMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                        Change Password
+                    </button>
+                    <button onClick={handleLogout} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>Log Out</button>
                 </div>
             </div>
             <div id='Menu-Change-Password'>
