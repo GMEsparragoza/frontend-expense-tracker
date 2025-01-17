@@ -73,6 +73,9 @@ export const LoginForm = () => {
                     titulo: "Sesion Iniciada",
                     parrafo: "La verificación en dos pasos fue correcta"
                 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             })
             .catch(error => {
                 console.error('Error al verificar 2FA:', error);
