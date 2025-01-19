@@ -8,7 +8,7 @@ const Alerta = () => {
         if (alerta.activa && alerta.tipo) {
             const timer = setTimeout(() => {
                 ocultarAlerta();
-            }, 1000); // Ocultar después de 1 segundo
+            }, 1500); // Ocultar después de 1 segundo y medio
             return () => clearTimeout(timer); // Limpia el temporizador al desmontar o cambiar la alerta
         }
     }, [alerta, ocultarAlerta]);

@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../utils/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { REACT_APP_BACKEND_API_URL } from '../../utils/config'
+import { useAlert } from '../../utils/AlertContext';
 
 export const DatosSection = () => {
     const [passwordMenu, setPasswordMenu] = useState(false);
@@ -15,21 +15,12 @@ export const DatosSection = () => {
     const [lastName, setLastName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const { user, setUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+    const { mostrarAlerta } = useAlert();
     const [imageMenu, setImageMenu] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-
-    const handleLogout = () => {
-        axios.post(`${REACT_APP_BACKEND_API_URL}/api/logout`)
-            .then(() => {
-                setUser(null); // Limpiar el estado del usuario
-                navigate('/login'); // Redirigir a la página de inicio de sesión
-            })
-            .catch(error => {
-                console.error('Error al cerrar sesión:', error);
-            });
-    };
+    const [user2FACode, setUser2FACode] = useState(null);
+    const [twoFACodeSent, setTwoFACodeSent] = useState(false);
 
     const handleChangePassword = (e) => {
         e.preventDefault();
@@ -55,11 +46,29 @@ export const DatosSection = () => {
             password,
             newPassword
         })
-            .then(() => {
-                setPassword("");
-                setConfirmPassword("");
-                setNewPassword("");
-                setPasswordMenu(false);
+            .then((response) => {
+                if (response.data.twoFARequired) {
+                    mostrarAlerta({
+                        tipo: true,
+                        titulo: "2FA Requerido",
+                        parrafo: "Se envio un código de verificación a su correo electrónico"
+                    });
+                    setTimeout(() => {
+                        setTwoFACodeSent(true);
+                        setLoading(false);
+                        setPasswordMenu(false)
+                    }, 1000);
+                } else {
+                    setPassword("");
+                    setConfirmPassword("");
+                    setNewPassword("");
+                    setPasswordMenu(false);
+                    mostrarAlerta({
+                        tipo: true,
+                        titulo: "Password updated",
+                        parrafo: "Password updated successfully"
+                    })
+                }
             })
             .catch(err => {
                 console.error("Error al cambiar contraseña: ", err);
@@ -67,6 +76,31 @@ export const DatosSection = () => {
             })
         setLoading(false);
     }
+
+    const handleConfirmNewPassword = (e) => {
+        e.preventDefault();
+
+        axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-change-password`, {
+            code: user2FACode,
+            newPassword
+        }, { withCredentials: true })
+            .then((response) => {
+                // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
+                mostrarAlerta({
+                    tipo: true,
+                    titulo: "Sesion Iniciada",
+                    parrafo: "La verificación en dos pasos fue correcta"
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
+            .catch(error => {
+                console.error('Error al verificar 2FA:', error);
+                setError("Código incorrecto o expirado.");
+                setLoading(false);
+            });
+    };
 
     const handleUpdateInfo = (e) => {
         e.preventDefault();
@@ -161,13 +195,12 @@ export const DatosSection = () => {
                     <button onClick={() => setPasswordMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
                         Change Password
                     </button>
-                    <button onClick={handleLogout} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>Log Out</button>
                 </div>
             </div>
             <div id='Menu-Change-Password'>
                 {passwordMenu && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-60" onSubmit={(e) => handleChangePassword(e)}>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
+                        <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleChangePassword(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Change Password</h2>
                             <div className='my-4'>
                                 <label className="block text-gray text-sm font-medium mb-1">Current password</label>
@@ -225,8 +258,8 @@ export const DatosSection = () => {
             </div>
             <div id='Menu-Update-Information'>
                 {informationMenu && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-60" onSubmit={(e) => handleUpdateInfo(e)}>
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
+                        <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleUpdateInfo(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Update Information</h2>
                             <div className='my-4'>
                                 <label className="block text-gray text-sm font-medium mb-1">Username</label>
@@ -284,8 +317,8 @@ export const DatosSection = () => {
             </div>
             <div id='Image-Menu'>
                 {imageMenu && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-60">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
+                        <div className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40">
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Upload Image</h2>
                             <input
                                 type="file"
@@ -312,6 +345,45 @@ export const DatosSection = () => {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                )}
+            </div>
+            <div id='Menu-Change-Password'>
+                {twoFACodeSent && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
+                        <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleConfirmNewPassword(e)}>
+                            <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
+                            <div className='my-4'>
+                                <label className="block text-gray text-sm font-medium mb-1">Verification Code</label>
+                                <input
+                                    type="number"
+                                    onChange={(e) => setUser2FACode(e.target.value)}
+                                    className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
+                                    placeholder="Enter the Verification Code"
+                                />
+                            </div>
+                            <div className="flex justify-between items-center w-11/12 mx-auto space-x-4">
+                                <button
+                                    type='button'
+                                    onClick={() => {
+                                        setTwoFACodeSent(false)
+                                        setUser2FACode(null)
+                                        setError("");
+                                    }}
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type='submit'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                >
+                                    Confirm
+                                </button>
+                            </div>
+                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
+                            {loading && <p className='text-white mt-2 text-center'>Changing Password...</p>}
+                        </form>
                     </div>
                 )}
             </div>

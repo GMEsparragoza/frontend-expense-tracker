@@ -16,6 +16,7 @@ export const LoginForm = () => {
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
+        setLoading(true);
         if (!email || !password) {
             setError("Data must be entered");
             setLoading(false);
@@ -28,10 +29,16 @@ export const LoginForm = () => {
             .then((response) => {
                 // Si el backend responde que se necesita 2FA
                 if (response.data.twoFARequired) {
-                    setTwoFACodeSent(true);
-                    setLoading(false);
+                    mostrarAlerta({
+                        tipo: true,
+                        titulo: "2FA Requerido",
+                        parrafo: "Se envio un código de verificación a su correo electrónico"
+                    });
+                    setTimeout(() => {
+                        setTwoFACodeSent(true);
+                        setLoading(false);
+                    }, 1000);
                 } else {
-                    console.log('Inicio de Sesion Exitoso:');
                     mostrarAlerta({
                         tipo: true,
                         titulo: "Sesion Iniciada",
@@ -67,7 +74,6 @@ export const LoginForm = () => {
         }, { withCredentials: true })
             .then((response) => {
                 // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
-                console.log('Verificación 2FA exitosa');
                 mostrarAlerta({
                     tipo: true,
                     titulo: "Sesion Iniciada",
