@@ -65,7 +65,15 @@ export const SeeExpensesSection = () => {
                                         <td className="px-4 py-2 text-center text-white">{expense.id}</td>
                                         <td className="px-4 py-2 text-white">{expense.description}</td>
                                         <td className="px-4 py-2 text-center text-white">{expense.amount}</td>
-                                        <td className="px-4 py-2 text-center text-white">{new Date(expense.date).toLocaleDateString()}</td>
+                                        <td className="px-4 py-2 text-center text-white">
+                                            {/* Convertir la fecha a UTC para evitar problemas de zona horaria */}
+                                            {new Date(expense.date).toLocaleDateString('en-GB', {
+                                                timeZone: 'UTC',  // Forzamos el uso de la zona horaria UTC
+                                                year: 'numeric',
+                                                month: 'numeric',
+                                                day: 'numeric',
+                                            })}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
