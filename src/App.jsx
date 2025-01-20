@@ -11,6 +11,7 @@ import Perfil from './pages/PerfilPage';
 import { AlertProvider } from './utils/AlertContext';
 import Alerta from './components/Alerta';
 import ResetPassword from './pages/ResetPassword';
+import { DateProvider } from './utils/DateContext';
 
 axios.defaults.withCredentials = true;
 
@@ -26,13 +27,15 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <DateProvider>
+                      <Dashboard />
+                    </DateProvider>
+                  </ProtectedRoute>
+                }
+              />
             <Route
               path="/perfil"
               element={
