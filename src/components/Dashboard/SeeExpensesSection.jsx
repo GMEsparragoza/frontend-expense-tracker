@@ -12,15 +12,21 @@ export const SeeExpensesSection = () => {
     useEffect(() => {
         const getExpenses = async () => {
             try {
-                // Realizamos la petición a la API
-                const response = await axios.get(`${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${dateRange.startDate.toISOString()}&end=${dateRange.endDate.toISOString()}`);
-                // Se establecen los gastos recibidos en el estado
+                // Convertir las fechas de ISOString a Date y luego de nuevo a ISO para la petición
+                const startDate = new Date(dateRange.startDate);
+                const endDate = new Date(dateRange.endDate);
+
+                // Realizamos la solicitud al backend con las fechas en formato ISO
+                const response = await axios.get(
+                    `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
+                );
+
                 setExpenses(response.data);
+                console.log(response.data);
             } catch (error) {
-                setError(error.message); // Establecer el mensaje de error si ocurre
+                setError(error.message);
             }
         };
-
         getExpenses();
     }, [dateRange]); // Se vuelve a ejecutar cuando el rango de fechas cambia
 
