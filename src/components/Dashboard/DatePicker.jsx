@@ -19,16 +19,11 @@ export const DatePickeador = () => {
 
     const handleDateChange = (dates) => {
         const [start, end] = dates;
-        if (start) {
-            setStartDate(setDateWithoutTime(start)); // Remover la hora y establecer el tiempo en 00:00:00
-        }
-        if (end) {
-            setEndDate(setDateWithoutTime(end)); // Lo mismo para el endDate
-        }
+        setStartDate(setDateWithoutTime(start));
+        setEndDate(setDateWithoutTime(end));
     };
 
     const fetchData = () => {
-        // Almacenar las fechas en formato ISO, pero con hora 00:00:00
         setDateRange({
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
