@@ -15,6 +15,7 @@ export const DatePickeador = () => {
         return new Date(Date.UTC(validDate.getUTCFullYear(), validDate.getUTCMonth(), validDate.getUTCDate()));
     };
 
+    // Lógica para manejar el cambio de fecha
     const handleDateChange = (dates) => {
         const [start, end] = dates;
         if (start) {
@@ -25,8 +26,8 @@ export const DatePickeador = () => {
         }
     };
 
+    // Actualizar el contexto con las fechas seleccionadas
     const fetchData = () => {
-        // Almacenamos las fechas seleccionadas como ISO con la parte de tiempo en UTC
         setDateRange({
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
@@ -62,6 +63,7 @@ export const DatePickeador = () => {
                         selectsRange
                         inline
                         className="bg-white rounded-lg"
+                        dateFormat="yyyy/MM/dd" // Formato de fecha
                     />
                     <div className="mt-4 text-center">
                         <button
