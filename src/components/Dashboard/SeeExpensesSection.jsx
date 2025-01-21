@@ -16,7 +16,7 @@ export const SeeExpensesSection = () => {
                 const startDate = new Date(dateRange.startDate);
                 const endDate = new Date(dateRange.endDate);
 
-                console.log('Fetching data from', startDate.toISOString(), 'to', endDate.toISOString());
+                console.log('Fetching data from', startDate, 'to', endDate);
 
                 // Realizamos la solicitud al backend con las fechas en formato ISO
                 const response = await axios.get(
