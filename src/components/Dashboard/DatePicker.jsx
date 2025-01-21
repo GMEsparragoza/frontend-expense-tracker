@@ -9,16 +9,21 @@ export const DatePickeador = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const { setDateRange } = useDate();
 
+    // Convierte una fecha a UTC eliminando la zona horaria local
+    const convertToUTC = (date) => {
+        return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    };
+
     const handleDateChange = (dates) => {
         const [start, end] = dates;
-        setStartDate(start);
-        setEndDate(end);
+        setStartDate(convertToUTC(start)); // Convierte a UTC
+        setEndDate(convertToUTC(end)); // Convierte a UTC
     };
 
     const fetchData = () => {
         setDateRange({
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
+            startDate: startDate.toISOString(), // Usamos toISOString() para asegurarnos de que esté en UTC
+            endDate: endDate.toISOString(), // Lo mismo para la fecha de fin
         });
         setShowDatePicker(false); // Ocultar el menú flotante después de aplicar
     };
