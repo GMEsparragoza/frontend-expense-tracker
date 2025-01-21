@@ -13,6 +13,8 @@ export const DatePickeador = () => {
         const [start, end] = dates;
         setStartDate(start);
         setEndDate(end);
+        console.log('Start date:', start);
+        console.log('End date:', end);
     };
 
     const fetchData = () => {

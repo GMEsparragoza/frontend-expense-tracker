@@ -15,7 +15,7 @@ export const SeeExpensesSection = () => {
                 // Función para quitar la hora y ponerla en 00:00:00 UTC
                 const setDateWithoutTime = (date) => {
                     const newDate = new Date(date);
-                    newDate.setUTCHours(0, 0, 0, 0); // Establecer la hora en 00:00:00 UTC
+                    newDate.setHours(0, 0, 0, 0); // Establecer la hora en 00:00:00 UTC
                     return newDate;
                 };
 
