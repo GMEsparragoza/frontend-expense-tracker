@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDate } from '../../utils/DateContext';
 
 export const DatePickeador = () => {
-    const { setDateRange } = useDate();
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 14))); // Últimas 2 semanas
     const [endDate, setEndDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const { setDateRange } = useDate();
 
-    // Función para convertir la fecha a UTC sin la parte de hora local
-    const convertToUTC = (date) => {
-        const validDate = new Date(date);
-        return new Date(Date.UTC(validDate.getUTCFullYear(), validDate.getUTCMonth(), validDate.getUTCDate()));
-    };
-
-    // Lógica para manejar el cambio de fecha
     const handleDateChange = (dates) => {
         const [start, end] = dates;
-        if (start) {
-            setStartDate(convertToUTC(start));  // Asegura que se guarde la fecha en UTC
-        }
-        if (end) {
-            setEndDate(convertToUTC(end));  // Asegura que se guarde la fecha en UTC
-        }
+        setStartDate(start);
+        setEndDate(end);
     };
 
-    // Actualizar el contexto con las fechas seleccionadas
     const fetchData = () => {
         setDateRange({
             startDate: startDate.toISOString(),
@@ -34,15 +22,6 @@ export const DatePickeador = () => {
         });
         setShowDatePicker(false); // Ocultar el menú flotante después de aplicar
     };
-
-    useEffect(() => {
-        // Convertir startDate y endDate a UTC para asegurarse de que estén correctamente formateadas
-        const startUTC = convertToUTC(startDate);
-        const endUTC = convertToUTC(endDate);
-
-        setStartDate(startUTC);
-        setEndDate(endUTC);
-    }, [startDate, endDate]);
 
     return (
         <div className="relative">
@@ -63,7 +42,6 @@ export const DatePickeador = () => {
                         selectsRange
                         inline
                         className="bg-white rounded-lg"
-                        dateFormat="yyyy/MM/dd" // Formato de fecha
                     />
                     <div className="mt-4 text-center">
                         <button
