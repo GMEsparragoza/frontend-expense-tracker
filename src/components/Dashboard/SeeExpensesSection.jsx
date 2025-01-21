@@ -12,15 +12,22 @@ export const SeeExpensesSection = () => {
     useEffect(() => {
         const getExpenses = async () => {
             try {
-                // Convertir las fechas de ISOString a Date y luego de nuevo a ISO para la petición
-                const startDate = new Date(dateRange.startDate);
-                const endDate = new Date(dateRange.endDate);
+                // Función para quitar la hora y ponerla en 00:00:00 UTC
+                const setDateWithoutTime = (date) => {
+                    const newDate = new Date(date);
+                    newDate.setUTCHours(0, 0, 0, 0); // Establecer la hora en 00:00:00 UTC
+                    return newDate;
+                };
+
+                // Convertir las fechas de ISOString a Date y quitar la hora
+                const startDate = setDateWithoutTime(new Date(dateRange.startDate));
+                const endDate = setDateWithoutTime(new Date(dateRange.endDate));
 
                 console.log('Fetching data from', startDate, 'to', endDate);
 
-                // Realizamos la solicitud al backend con las fechas en formato ISO
+                // Realizamos la solicitud al backend con las fechas ya ajustadas
                 const response = await axios.get(
-                    `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${dateRange.startDate}&end=${dateRange.endDate}`
+                    `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
                 );
 
                 setExpenses(response.data);

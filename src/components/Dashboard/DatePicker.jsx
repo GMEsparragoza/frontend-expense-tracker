@@ -9,20 +9,10 @@ export const DatePickeador = () => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const { setDateRange } = useDate();
 
-    // Función para establecer la hora de la fecha como 00:00:00 UTC
-    const setDateWithoutTime = (date) => {
-        // Crear un nuevo objeto Date y asegurarse que la hora sea 00:00:00 UTC
-        const newDate = new Date(date);
-        newDate.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00
-        console.log('New date:', newDate);
-        return newDate;
-    };
-
     const handleDateChange = (dates) => {
         const [start, end] = dates;
-        console.log('Start:', start, 'End:', end);
-        setStartDate(setDateWithoutTime(start));
-        setEndDate(setDateWithoutTime(end));
+        setStartDate(start);
+        setEndDate(end);
     };
 
     const fetchData = () => {
