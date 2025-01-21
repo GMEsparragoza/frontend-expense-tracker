@@ -20,7 +20,7 @@ export const SeeExpensesSection = () => {
 
                 // Realizamos la solicitud al backend con las fechas en formato ISO
                 const response = await axios.get(
-                    `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${startDate}&end=${endDate}`
+                    `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${dateRange.startDate}&end=${dateRange.endDate}`
                 );
 
                 setExpenses(response.data);
