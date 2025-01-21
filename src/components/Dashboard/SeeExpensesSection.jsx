@@ -55,7 +55,7 @@ export const SeeExpensesSection = () => {
             <div className="w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue border-t-4 border-darkSlate rounded-b-xl shadow-lg p-6 relative">
                 <h2 className="text-2xl font-semibold text-white mb-4 text-center">Expenses</h2>
                 {expenses.length === 0 ? (
-                    <p className="text-white">No hay gastos en este rango de fechas.</p>
+                    <p className="text-white text-2xl font-semibold text-center">No hay gastos en este rango de fechas.</p>
                 ) : (
                     <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
                         <table className="min-w-full table-auto">
