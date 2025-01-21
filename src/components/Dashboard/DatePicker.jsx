@@ -1,34 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useDate } from '../../utils/DateContext';
 
 export const DatePickeador = () => {
+    const { setDateRange } = useDate();
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 14))); // Últimas 2 semanas
     const [endDate, setEndDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const { setDateRange } = useDate();
 
-    // Convierte una fecha a UTC eliminando la zona horaria local
+    // Función para convertir la fecha a UTC sin la parte de hora local
     const convertToUTC = (date) => {
-        // Asegúrate de que 'date' sea un objeto Date válido
         const validDate = new Date(date);
         return new Date(Date.UTC(validDate.getUTCFullYear(), validDate.getUTCMonth(), validDate.getUTCDate()));
     };
 
     const handleDateChange = (dates) => {
         const [start, end] = dates;
-        setStartDate(convertToUTC(start)); // Convierte a UTC
-        setEndDate(convertToUTC(end)); // Convierte a UTC
+        if (start) {
+            setStartDate(convertToUTC(start));  // Asegura que se guarde la fecha en UTC
+        }
+        if (end) {
+            setEndDate(convertToUTC(end));  // Asegura que se guarde la fecha en UTC
+        }
     };
 
     const fetchData = () => {
+        // Almacenamos las fechas seleccionadas como ISO con la parte de tiempo en UTC
         setDateRange({
-            startDate: startDate.toISOString(), // Usamos toISOString() para asegurarnos de que esté en UTC
-            endDate: endDate.toISOString(), // Lo mismo para la fecha de fin
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
         });
         setShowDatePicker(false); // Ocultar el menú flotante después de aplicar
     };
+
+    useEffect(() => {
+        // Convertir startDate y endDate a UTC para asegurarse de que estén correctamente formateadas
+        const startUTC = convertToUTC(startDate);
+        const endUTC = convertToUTC(endDate);
+
+        setStartDate(startUTC);
+        setEndDate(endUTC);
+    }, [startDate, endDate]);
 
     return (
         <div className="relative">
