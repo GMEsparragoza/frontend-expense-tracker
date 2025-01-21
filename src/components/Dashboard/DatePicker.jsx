@@ -11,7 +11,9 @@ export const DatePickeador = () => {
 
     // Convierte una fecha a UTC eliminando la zona horaria local
     const convertToUTC = (date) => {
-        return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+        // Asegúrate de que 'date' sea un objeto Date válido
+        const validDate = new Date(date);
+        return new Date(Date.UTC(validDate.getUTCFullYear(), validDate.getUTCMonth(), validDate.getUTCDate()));
     };
 
     const handleDateChange = (dates) => {
