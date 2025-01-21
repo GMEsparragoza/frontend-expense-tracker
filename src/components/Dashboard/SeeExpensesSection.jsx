@@ -16,13 +16,14 @@ export const SeeExpensesSection = () => {
                 const startDate = new Date(dateRange.startDate);
                 const endDate = new Date(dateRange.endDate);
 
+                console.log('Fetching data from', startDate.toISOString(), 'to', endDate.toISOString());
+
                 // Realizamos la solicitud al backend con las fechas en formato ISO
                 const response = await axios.get(
                     `${REACT_APP_BACKEND_API_URL}/expense/getExpenses?start=${startDate.toISOString()}&end=${endDate.toISOString()}`
                 );
 
                 setExpenses(response.data);
-                console.log(response.data);
             } catch (error) {
                 setError(error.message);
             }
