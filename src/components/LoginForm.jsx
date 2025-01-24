@@ -40,7 +40,7 @@ export const LoginForm = () => {
                         parrafo: "Se envio un código de verificación a su correo electrónico"
                     });
                     setTimeout(() => {
-                        setTwoFACodeSent(true);
+                        setTwoFAData({ menu: true, ...twoFAData });
                         setStatus({ loading: false, error: null });
                     }, 1000);
                 } else {
