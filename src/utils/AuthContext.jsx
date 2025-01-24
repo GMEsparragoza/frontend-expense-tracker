@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
             .catch(error => {
                 setUser(null);
                 setLoading(false);
-                console.error(error);
             });
 
         // Axios interceptor for handling token expiration

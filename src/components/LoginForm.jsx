@@ -13,10 +13,8 @@ export const LoginForm = () => {
         loading: false,
         error: null
     })
-    const [twoFAData, setTwoFAData] = useState({
-        menu: false,
-        code: null
-    })
+    const [twoFAMenu, setTwoFAMenu] = useState(false);
+    const [twoFACode, setTwoFACode] = useState(null);
     const { mostrarAlerta } = useAlert();
     const navigate = useNavigate();
 
@@ -40,9 +38,9 @@ export const LoginForm = () => {
                         parrafo: "Se envio un código de verificación a su correo electrónico"
                     });
                     setTimeout(() => {
-                        setTwoFAData({ menu: true, ...twoFAData });
-                        setStatus({ loading: false, error: null });
-                    }, 1000);
+                        setTwoFAMenu(true);
+                        setStatus({ loading: false, ...status });
+                    }, 1500);
                 } else {
                     mostrarAlerta({
                         tipo: true,
@@ -51,7 +49,7 @@ export const LoginForm = () => {
                     });
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000);
+                    }, 1500);
                 }
             })
             .catch(error => {
@@ -74,7 +72,7 @@ export const LoginForm = () => {
         e.preventDefault();
         setStatus({ loading: true, error: null });
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-2fa`, {
-            code: twoFAData.code,
+            code: twoFACode,
             email: formLogin.email
         }, { withCredentials: true })
             .then((response) => {
@@ -86,7 +84,7 @@ export const LoginForm = () => {
                 });
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 1500);
             })
             .catch(error => {
                 console.error('Error al verificar 2FA:', error);
@@ -116,13 +114,13 @@ export const LoginForm = () => {
                 </div>
                 <button type='button' onClick={() => navigate('/reset-password')} className='w-full text-lightBlue py-2 font-medium rounded mt-6 transition-colors'>Forgot your password?</button>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign In</button>
-                {!twoFAData.menu && (<div>
+                {!twoFAMenu && (<div>
                     {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
                     {status.loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
                 </div>)}
             </form>
             <div id='Menu-Change-Password'>
-                {twoFAData.menu && (
+                {twoFAMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleVerifyTwoFACode(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
@@ -130,7 +128,7 @@ export const LoginForm = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Verification Code</label>
                                 <input
                                     type="number"
-                                    onChange={(e) => setTwoFAData({ ...twoFAData, code: e.target.value })}
+                                    onChange={(e) => setTwoFACode(e.target.value)}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter the Verification Code"
                                 />
@@ -139,7 +137,7 @@ export const LoginForm = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setTwoFAData({ menu: false, code: null })
+                                        setTwoFAMenu(false)
                                         setStatus({ ...status, error: null })
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'

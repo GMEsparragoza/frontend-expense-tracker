@@ -35,7 +35,6 @@ export const SumarySection = () => {
                     }
                 );
                 const { balance, totalExpenses, totalIncome } = response.data;
-                console.log(response.data);
                 setData({
                     balance: balance ?? 0,
                     totalExpenses: totalExpenses ?? 0,
