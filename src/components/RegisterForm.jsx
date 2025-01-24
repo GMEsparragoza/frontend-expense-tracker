@@ -15,11 +15,9 @@ export const RegisterForm = () => {
         loading: false,
         error: ""
     })
-    const [twoFACodeData, setTwoFACodeData] = useState({
-        twoFACode: "",
-        user2FACode: "",
-        twoFACodeSent: false
-    })
+    const [twoFACode, setTwoFACode] = useState(null);
+    const [usertwoFACode, setUserTwoFACode] = useState(null);
+    const [twoFAMenu, setTwoFAMenu] = useState(false);
     const { mostrarAlerta } = useAlert();
 
     const handleSubmitForm = async (e) => {
@@ -42,9 +40,9 @@ export const RegisterForm = () => {
         await axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-new-user`, { username: formRegister.username, email: formRegister.email })
             .then(async response => {
                 const code = Math.floor(100000 + Math.random() * 900000);
-                setTwoFACodeData({ ...twoFACodeData, twoFACode: code });
+                setTwoFACode(code);
                 await sendValidationEmail(formRegister.email, code);
-                setTwoFACodeData({ ...twoFACodeData, twoFACodeSent: true });
+                setTwoFAMenu(true);
                 mostrarAlerta({
                     tipo: true,
                     titulo: "Verify account",
@@ -60,11 +58,11 @@ export const RegisterForm = () => {
     const handleVerifyTwoFACode = async (e) => {
         e.preventDefault();
         setStatus({ loading: true, error: "" });
-        if (!twoFACodeData.user2FACode) {
+        if (!usertwoFACode) {
             setStatus({ error: "The verification code must be entered", loading: false });
             return;
         }
-        if (twoFACodeData.user2FACode != twoFACodeData.twoFACode) {
+        if (usertwoFACode != twoFACode) {
             setStatus({ error: "The verification code is incorrect", loading: false });
             return;
         }
@@ -122,11 +120,11 @@ export const RegisterForm = () => {
                         placeholder="Confirm your password" />
                 </div>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign Up</button>
-                {status.error && !twoFACodeData.twoFACodeSent && <p className='text-red mt-2 text-center'>{status.error}</p>}
-                {status.loading && !twoFACodeData.twoFACodeSent && <p className='text-white mt-2 text-center'>Verifying Data...</p>}
+                {status.error && !twoFAMenu && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                {status.loading && !twoFAMenu && <p className='text-white mt-2 text-center'>Verifying Data...</p>}
             </form>
             <div id='Menu-Change-Password'>
-                {twoFACodeData.twoFACodeSent && (
+                {twoFAMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleVerifyTwoFACode(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
@@ -134,7 +132,7 @@ export const RegisterForm = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Verification Code</label>
                                 <input
                                     type="number"
-                                    onChange={(e) => setTwoFACodeData({ ...twoFACodeData, user2FACode: e.target.value })}
+                                    onChange={(e) => setUserTwoFACode(e.target.value)}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter the Verification Code"
                                 />
@@ -143,9 +141,9 @@ export const RegisterForm = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setTwoFACodeData({ ...twoFACodeData, twoFACodeSent: false })
-                                        setTwoFACodeData({ ...twoFACodeData, user2FACode: "" })
-                                        setError("");
+                                        setUserTwoFACode(null);
+                                        setTwoFAMenu(false);
+                                        setStatus({ error: "", ...status });
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
