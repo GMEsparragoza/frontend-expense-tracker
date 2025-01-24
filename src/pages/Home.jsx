@@ -7,7 +7,7 @@ const Home = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-darkSlate text-white flex flex-col items-center justify-center">
+            <div className="min-h-screen bg-darkSlate text-white flex flex-col items-center justify-center py-8 mt-16 sm:py-0 sm:mt-0">
                 <div className="text-center mb-32">
                     <h2 className="text-6xl font-extrabold text-lightBlue">Expense Tracker</h2>
                     <h1 className="text-3xl font-medium mt-4">Take your accounts to the next level.</h1>

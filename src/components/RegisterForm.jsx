@@ -5,43 +5,46 @@ import { useAlert } from '../utils/AlertContext'
 import {sendValidationEmail} from '../utils/sendEmail'
 
 export const RegisterForm = () => {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [user2FACode, setUser2FACode] = useState(null);
-    const [twoFACode, setTwoFACode] = useState(null);
-    const [twoFACodeSent, setTwoFACodeSent] = useState(false);
+    const [formRegister, setFormRegister] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    })
+    const [status, setStatus] = useState({
+        loading: false,
+        error: ""
+    })
+    const [twoFACodeData, setTwoFACodeData] = useState({
+        twoFACode: "",
+        user2FACode: "",
+        twoFACodeSent: false
+    })
     const { mostrarAlerta } = useAlert();
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
-        if (!username || !email || !password || !confirmPassword) {
-            setError("Data must be entered");
-            setLoading(false);
+        setStatus({ ...status, error: "" });
+        setStatus({ ...status, loading: true });
+        if (!formRegister.username || !formRegister.email || !formRegister.password || !formRegister.confirmPassword) {
+            setStatus({ error: "Data must be entered", loading: false });
             return;
         }
-        if (password !== confirmPassword) {
-            setError("Passwords do not match");
-            setLoading(false);
+        if (formRegister.password !== formRegister.confirmPassword) {
+            setStatus({ error: "Passwords do not match", loading: false });
             return;
         }
-        if (password.length < 6) {
-            setError("The password must contain at least 6 characters");
-            setLoading(false);
+        if (formRegister.password.length < 6) {
+            setStatus({ error: "The password must be at least 6 characters", loading: false });
             return;
         }
 
-        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-new-user`, { username, email })
+        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-new-user`, { username: formRegister.username, email: formRegister.email })
             .then(async response => {
                 const code = Math.floor(100000 + Math.random() * 900000);
-                setTwoFACode(code);
-                await sendValidationEmail(email, code);
-                setTwoFACodeSent(true);
+                setTwoFACodeData({ ...twoFACodeData, twoFACode: code });
+                await sendValidationEmail(formRegister.email, code);
+                setTwoFACodeData({ ...twoFACodeData, twoFACodeSent: true });
                 mostrarAlerta({
                     tipo: true,
                     titulo: "Verify account",
@@ -49,26 +52,23 @@ export const RegisterForm = () => {
                 })
             })
             .catch(error => {
-                setError(error.response.data.message);
+                setStatus({ error: error.response.data.message, loading: false });
             });
-        setLoading(false);
+        setStatus({ ...status, loading: false });
     }
 
     const handleVerifyTwoFACode = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
-        if (!twoFACode) {
-            setError("The verification code must be entered");
-            setLoading(false);
+        setStatus({ loading: true, error: "" });
+        if (!twoFACodeData.user2FACode) {
+            setStatus({ error: "The verification code must be entered", loading: false });
             return;
         }
-        if (user2FACode != twoFACode) {
-            setError("The verification code is incorrect");
-            setLoading(false);
+        if (twoFACodeData.user2FACode != twoFACodeData.twoFACode) {
+            setStatus({ error: "The verification code is incorrect", loading: false });
             return;
         }
-        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/signup`, { username, email, password })
+        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/signup`, { username: formRegister.username, email: formRegister.email, password: formRegister.password })
             .then(response => {
                 mostrarAlerta({
                     tipo: true,
@@ -80,9 +80,9 @@ export const RegisterForm = () => {
                 }, 1000);
             })
             .catch(error => {
-                setError(error.response.data.message);
+                setStatus({ error: error.response.data.message, loading: false });
             });
-        setLoading(false);
+        setStatus({ ...status, loading: false });
     }
 
     return (
@@ -92,41 +92,41 @@ export const RegisterForm = () => {
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">Username</label>
                     <input type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={formRegister.username}
+                        onChange={(e) => setFormRegister({ ...formRegister, username: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your username" />
                 </div>
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">E-mail</label>
                     <input type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={formRegister.email}
+                        onChange={(e) => setFormRegister({ ...formRegister, email: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your email" />
                 </div>
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">Password</label>
                     <input type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={formRegister.password}
+                        onChange={(e) => setFormRegister({ ...formRegister, password: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your password" />
                 </div>
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">Confirm Password</label>
                     <input type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={formRegister.confirmPassword}
+                        onChange={(e) => setFormRegister({ ...formRegister, confirmPassword: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Confirm your password" />
                 </div>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign Up</button>
-                {error && !twoFACodeSent && <p className='text-red mt-2 text-center'>{error}</p>}
-                {loading && !twoFACodeSent && <p className='text-white mt-2 text-center'>Verifying Data...</p>}
+                {status.error && !twoFACodeData.twoFACodeSent && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                {status.loading && !twoFACodeData.twoFACodeSent && <p className='text-white mt-2 text-center'>Verifying Data...</p>}
             </form>
             <div id='Menu-Change-Password'>
-                {twoFACodeSent && (
+                {twoFACodeData.twoFACodeSent && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleVerifyTwoFACode(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
@@ -134,7 +134,7 @@ export const RegisterForm = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Verification Code</label>
                                 <input
                                     type="number"
-                                    onChange={(e) => setUser2FACode(e.target.value)}
+                                    onChange={(e) => setTwoFACodeData({ ...twoFACodeData, user2FACode: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter the Verification Code"
                                 />
@@ -143,8 +143,8 @@ export const RegisterForm = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setTwoFACodeSent(false)
-                                        setUser2FACode(null)
+                                        setTwoFACodeData({ ...twoFACodeData, twoFACodeSent: false })
+                                        setTwoFACodeData({ ...twoFACodeData, user2FACode: "" })
                                         setError("");
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
@@ -158,8 +158,8 @@ export const RegisterForm = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                            {loading && <p className='text-white mt-2 text-center'>Signin Up...</p>}
+                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.loading && <p className='text-white mt-2 text-center'>Signin Up...</p>}
                         </form>
                     </div>
                 )}

@@ -16,6 +16,7 @@ module.exports = {
       lightSlate: '#8D99AE',
       lightBlue: '#3B82F6',
       red: '#991b1b',
+      green: '#009900',
       lightDarkBlue: '#2a3b54',
     },
   },

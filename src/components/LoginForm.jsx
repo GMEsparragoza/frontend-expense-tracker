@@ -5,8 +5,10 @@ import { useAlert } from '../utils/AlertContext'
 import { useNavigate } from 'react-router-dom';
 
 export const LoginForm = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [formLogin, setFormLogin] = useState({
+        email: "",
+        password: ""
+    })
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [twoFACodeSent, setTwoFACodeSent] = useState(false);
@@ -17,14 +19,14 @@ export const LoginForm = () => {
     const handleSubmitForm = (e) => {
         e.preventDefault();
         setLoading(true);
-        if (!email || !password) {
+        if (!formLogin.email || !formLogin.password) {
             setError("Data must be entered");
             setLoading(false);
             return;
         }
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/signin`, {
-            email,
-            password
+            email: formLogin.email,
+            password: formLogin.password
         }, { withCredentials: true })
             .then((response) => {
                 // Si el backend responde que se necesita 2FA
@@ -70,7 +72,7 @@ export const LoginForm = () => {
 
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-2fa`, {
             code: twoFACode,
-            email
+            email: formLogin.email
         }, { withCredentials: true })
             .then((response) => {
                 // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
@@ -97,16 +99,16 @@ export const LoginForm = () => {
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">E-mail</label>
                     <input type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={formLogin.email}
+                        onChange={(e) => setFormLogin({ ...formLogin, email: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your email" />
                 </div>
                 <div className='my-4'>
                     <label className="block text-gray text-sm font-medium mb-1">Password</label>
                     <input type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={formLogin.password}
+                        onChange={(e) => setFormLogin({ ...formLogin, password: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your password" />
                 </div>

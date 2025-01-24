@@ -5,46 +5,50 @@ import { REACT_APP_BACKEND_API_URL } from '../../utils/config'
 import { useAlert } from '../../utils/AlertContext';
 
 export const DatosSection = () => {
-    const [passwordMenu, setPasswordMenu] = useState(false);
-    const [informationMenu, setInformationMenu] = useState(false);
-    const [password, setPassword] = useState("");
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [username, setUsername] = useState("");
-    const [name, setName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { user } = useContext(AuthContext);
-    const { mostrarAlerta } = useAlert();
-    const [imageMenu, setImageMenu] = useState(false);
+    const [menus, setMenus] = useState({
+        passwordMenu: false,
+        informationMenu: false,
+        imageMenu: false,
+        twoFACodeSent: false
+    })
+    const [passwordData, setPasswordData] = useState({
+        password: "",
+        newPassword: "",
+        confirmPassword: ""
+    })
+    const [infoFormData, setInfoFormData] = useState({
+        username: "",
+        name: "",
+        lastName: ""
+    })
+    const [status, setStatus] = useState({
+        loading: false,
+        error: ""
+    })
     const [selectedImage, setSelectedImage] = useState(null);
     const [user2FACode, setUser2FACode] = useState(null);
-    const [twoFACodeSent, setTwoFACodeSent] = useState(false);
+    const { user } = useContext(AuthContext);
+    const { mostrarAlerta } = useAlert();
 
     const handleChangePassword = (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
-        if (!password || !newPassword || !confirmPassword) {
-            setError("You must complete all fields")
-            setLoading(false);
+        setStatus({ loading: true, error: "" });
+        if (!passwordData.password || !passwordData.newPassword || !passwordData.confirmPassword) {
+            setStatus({ error: "All fields must be filled in", loading: false });
             return;
         }
-        if (newPassword !== confirmPassword) {
-            setError("Passwords not match");
-            setLoading(false);
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setStatus({ error: "Passwords do not match", loading: false });
             return;
         }
-        if (newPassword.length < 6) {
-            setError("The password must contain at least 6 characters");
-            setLoading(false);
+        if (passwordData.newPassword.length < 6) {
+            setStatus({ error: "The password must be at least 6 characters", loading: false });
             return;
         }
 
         axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/changepassword`, {
-            password,
-            newPassword
+            password: passwordData.password,
+            newPassword: passwordData.newPassword
         })
             .then((response) => {
                 if (response.data.twoFARequired) {
@@ -54,15 +58,12 @@ export const DatosSection = () => {
                         parrafo: "Se envio un código de verificación a su correo electrónico"
                     });
                     setTimeout(() => {
-                        setTwoFACodeSent(true);
-                        setLoading(false);
-                        setPasswordMenu(false)
+                        setStatus({ loading: false, ...status })
+                        setMenus({ ...menus, passwordMenu: false, twoFACodeSent: true });
                     }, 1000);
                 } else {
-                    setPassword("");
-                    setConfirmPassword("");
-                    setNewPassword("");
-                    setPasswordMenu(false);
+                    setPasswordData({ password: "", newPassword: "", confirmPassword: "" });
+                    setMenus({ ...menus, passwordMenu: false });
                     mostrarAlerta({
                         tipo: true,
                         titulo: "Password updated",
@@ -72,17 +73,17 @@ export const DatosSection = () => {
             })
             .catch(err => {
                 console.error("Error al cambiar contraseña: ", err);
-                setError("Error changing password");
+                setStatus({ error: err.response.data.error, loading: false });
             })
-        setLoading(false);
+        setStatus({ ...status, loading: false });
     }
 
     const handleConfirmNewPassword = (e) => {
         e.preventDefault();
-
+        setStatus({ loading: true, error: "" });
         axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-change-password`, {
             code: user2FACode,
-            newPassword
+            newPassword: passwordData.newPassword
         }, { withCredentials: true })
             .then((response) => {
                 // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
@@ -97,38 +98,33 @@ export const DatosSection = () => {
             })
             .catch(error => {
                 console.error('Error al verificar 2FA:', error);
-                setError("Código incorrecto o expirado.");
-                setLoading(false);
+                setStatus({ error: error.response.data.error, loading: false });
             });
+        setStatus({ ...status, loading: false });
     };
 
     const handleUpdateInfo = (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
-        if (!username && !name && !lastName) {
-            setError("Please fill in at least one field to update")
-            setLoading(false);
+        setStatus({ loading: true, error: "" });
+        if (!infoFormData.username && !infoFormData.name && !infoFormData.lastName) {
+            setStatus({ error: "All fields must be filled in", loading: false });
             return;
         }
 
         axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/updateinfo`, {
-            username,
-            name,
-            lastName
+            username: infoFormData.username,
+            name: infoFormData.name,
+            lastName: infoFormData.lastName
         })
             .then(() => {
-                setUsername("");
-                setName("");
-                setLastName("");
-                setInformationMenu(false);
-                setLoading(false);
+                setInfoFormData({ username: "", name: "", lastName: "" });
+                setMenus({ ...menus, informationMenu: false });
+                setStatus({ loading: false, error: "" });
                 window.location.reload();
             })
             .catch(err => {
                 console.error("Error al actualizar la informacion: ", err);
-                setError(err.response.data.error);
-                setLoading(false);
+                setStatus({ error: err.response.data.error, loading: false });
             })
     }
 
@@ -146,7 +142,7 @@ export const DatosSection = () => {
             });
 
             console.log('Image uploaded successfully:', response.data);
-            setImageMenu(false);
+            setMenus({ ...menus, imageMenu: false });
             window.location.reload();
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -155,14 +151,14 @@ export const DatosSection = () => {
 
     return (
         <>
-
             <div className='w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue rounded-t-xl shadow-lg p-6 mt-8 relative'>
                 <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>User profile</h1>
-                <div className='flex items-center justify-start w-full'>
-                    <div className='relative flex flex-col items-start justify-center w-32 h-32 mr-6 cursor-pointer'>
+                <div className='flex flex-col sm:flex-row items-center sm:items-start w-full'>
+                    {/* Contenedor de la imagen (fuera del flujo con absolute) */}
+                    <div className='relative sm:absolute flex flex-col items-center justify-center w-32 h-32 sm:w-32 sm:h-32 mb-6 sm:mb-0 mr-6 cursor-pointer'>
                         <div
                             className='w-full h-full relative cursor-pointer'
-                            onClick={() => setImageMenu(true)} // Activar el menú de edición
+                            onClick={() => setMenus({ ...menus, imageMenu: true })} // Activar el menú de edición
                         >
                             {user.imageLink ? (
                                 <img
@@ -179,7 +175,8 @@ export const DatosSection = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex flex-col items-center text-center'>
+                    {/* Contenedor de los datos del usuario */}
+                    <div className='flex flex-col items-center text-center sm:text-left flex-grow justify-center'>
                         <h2 className='text-3xl font-semibold mb-2'>{user.username}</h2>
                         <p className='text-xl text-gray'>{user.email}</p>
                         <div className='flex space-x-2'>
@@ -188,17 +185,18 @@ export const DatosSection = () => {
                         </div>
                     </div>
                 </div>
+                {/* Botones */}
                 <div className='flex justify-center my-4'>
-                    <button onClick={() => setInformationMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={() => setMenus({ ...menus, informationMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
                         Edit Information
                     </button>
-                    <button onClick={() => setPasswordMenu(true)} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={() => setMenus({ ...menus, passwordMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
                         Change Password
                     </button>
                 </div>
             </div>
             <div id='Menu-Change-Password'>
-                {passwordMenu && (
+                {menus.passwordMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleChangePassword(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Change Password</h2>
@@ -206,7 +204,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Current password</label>
                                 <input
                                     type="password"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => setPasswordData({ ...passwordData, password: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Current password"
                                 />
@@ -215,7 +213,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">New Password</label>
                                 <input
                                     type="password"
-                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="New Password"
                                 />
@@ -224,7 +222,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Confirm Password</label>
                                 <input
                                     type="password"
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Confirm New Password"
                                 />
@@ -233,11 +231,9 @@ export const DatosSection = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setPasswordMenu(false)
-                                        setPassword("")
-                                        setNewPassword("")
-                                        setConfirmPassword("")
-                                        setError("");
+                                        setMenus({ ...menus, passwordMenu: false });
+                                        setPasswordData({ password: "", newPassword: "", confirmPassword: "" });
+                                        setStatus({ ...status, error: "" });
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
@@ -250,14 +246,14 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                            {loading && <p className='text-white mt-2 text-center'>Changing password...</p>}
+                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.loading && <p className='text-white mt-2 text-center'>Changing password...</p>}
                         </form>
                     </div>
                 )}
             </div>
             <div id='Menu-Update-Information'>
-                {informationMenu && (
+                {menus.informationMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleUpdateInfo(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Update Information</h2>
@@ -265,7 +261,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Username</label>
                                 <input
                                     type="text"
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    onChange={(e) => setInfoFormData({ ...infoFormData, username: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter your username"
                                 />
@@ -274,7 +270,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Name</label>
                                 <input
                                     type="text"
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e) => setInfoFormData({ ...infoFormData, name: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter your name"
                                 />
@@ -283,7 +279,7 @@ export const DatosSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Last Name</label>
                                 <input
                                     type="text"
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    onChange={(e) => setInfoFormData({ ...infoFormData, lastName: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter your last name"
                                 />
@@ -292,11 +288,9 @@ export const DatosSection = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setInformationMenu(false)
-                                        setUsername("")
-                                        setName("")
-                                        setLastName("")
-                                        setError("");
+                                        setMenus({ ...menus, informationMenu: false });
+                                        setInfoFormData({ username: "", name: "", lastName: "" });
+                                        setStatus({ ...status, error: "" });
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
@@ -309,14 +303,14 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                            {loading && <p className='text-white mt-2 text-center'>Updating Info...</p>}
+                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.loading && <p className='text-white mt-2 text-center'>Updating Info...</p>}
                         </form>
                     </div>
                 )}
             </div>
             <div id='Image-Menu'>
-                {imageMenu && (
+                {menus.imageMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <div className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40">
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Upload Image</h2>
@@ -331,7 +325,7 @@ export const DatosSection = () => {
                             <div className="flex justify-between items-center w-11/12 mx-auto space-x-4">
                                 <button
                                     type='button'
-                                    onClick={() => setImageMenu(false)}
+                                    onClick={() => setMenus({ ...menus, imageMenu: false })}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
                                     Cancel
@@ -349,7 +343,7 @@ export const DatosSection = () => {
                 )}
             </div>
             <div id='Menu-Change-Password'>
-                {twoFACodeSent && (
+                {menus.twoFACodeSent && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleConfirmNewPassword(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
@@ -366,9 +360,9 @@ export const DatosSection = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setTwoFACodeSent(false)
+                                        setMenus({ ...menus, twoFACodeSent: false });
                                         setUser2FACode(null)
-                                        setError("");
+                                        setStatus({ ...status, error: "" });
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
@@ -381,8 +375,8 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                            {loading && <p className='text-white mt-2 text-center'>Changing Password...</p>}
+                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.loading && <p className='text-white mt-2 text-center'>Changing Password...</p>}
                         </form>
                     </div>
                 )}
