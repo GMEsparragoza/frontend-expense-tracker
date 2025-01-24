@@ -9,19 +9,22 @@ export const LoginForm = () => {
         email: "",
         password: ""
     })
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [twoFACodeSent, setTwoFACodeSent] = useState(false);
-    const [twoFACode, setTwoFACode] = useState(null);
+    const [status, setStatus] = useState({
+        loading: false,
+        error: null
+    })
+    const [twoFAData, setTwoFAData] = useState({
+        menu: false,
+        code: null
+    })
     const { mostrarAlerta } = useAlert();
     const navigate = useNavigate();
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
-        setLoading(true);
+        setStatus({ loading: true, error: null });
         if (!formLogin.email || !formLogin.password) {
-            setError("Data must be entered");
-            setLoading(false);
+            setStatus({ loading: false, error: "All fields are required" });
             return;
         }
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/signin`, {
@@ -38,7 +41,7 @@ export const LoginForm = () => {
                     });
                     setTimeout(() => {
                         setTwoFACodeSent(true);
-                        setLoading(false);
+                        setStatus({ loading: false, error: null });
                     }, 1000);
                 } else {
                     mostrarAlerta({
@@ -54,24 +57,24 @@ export const LoginForm = () => {
             .catch(error => {
                 if (error.response) {
                     console.error('Error en la respuesta:', error.response.data);
-                    setError(error.response.data.message);
+                    setStatus({ loading: false, error: error.response.data.message });
                 } else if (error.request) {
                     console.error('Error en la solicitud:', error.request);
-                    setError(error.request?.data?.message);
+                    setStatus({ loading: false, error: error.request });
                 } else {
                     console.error('Error general:', error.message);
-                    setError(error.message);
+                    setStatus({ loading: false, error: error.message });
                 }
-                setLoading(false);
+                setStatus({ loading: false, ...status });
             });
     }
 
     // Cuando el usuario ingresa el código de 2FA
     const handleVerifyTwoFACode = (e) => {
         e.preventDefault();
-
+        setStatus({ loading: true, error: null });
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/verify-2fa`, {
-            code: twoFACode,
+            code: twoFAData.code,
             email: formLogin.email
         }, { withCredentials: true })
             .then((response) => {
@@ -87,8 +90,7 @@ export const LoginForm = () => {
             })
             .catch(error => {
                 console.error('Error al verificar 2FA:', error);
-                setError("Código incorrecto o expirado.");
-                setLoading(false);
+                setStatus({ loading: false, error: error.response.data.message });
             });
     };
 
@@ -114,13 +116,13 @@ export const LoginForm = () => {
                 </div>
                 <button type='button' onClick={() => navigate('/reset-password')} className='w-full text-lightBlue py-2 font-medium rounded mt-6 transition-colors'>Forgot your password?</button>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign In</button>
-                {!twoFACodeSent && (<div>
-                    {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                    {loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
+                {!twoFAData.menu && (<div>
+                    {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                    {status.loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
                 </div>)}
             </form>
             <div id='Menu-Change-Password'>
-                {twoFACodeSent && (
+                {twoFAData.menu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleVerifyTwoFACode(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Verify 2FA</h2>
@@ -128,7 +130,7 @@ export const LoginForm = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Verification Code</label>
                                 <input
                                     type="number"
-                                    onChange={(e) => setTwoFACode(e.target.value)}
+                                    onChange={(e) => setTwoFAData({ ...twoFAData, code: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter the Verification Code"
                                 />
@@ -137,9 +139,8 @@ export const LoginForm = () => {
                                 <button
                                     type='button'
                                     onClick={() => {
-                                        setTwoFACodeSent(false)
-                                        setTwoFACode(null)
-                                        setError("");
+                                        setTwoFAData({ menu: false, code: null })
+                                        setStatus({ ...status, error: null })
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
@@ -152,8 +153,8 @@ export const LoginForm = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {error && <p className='text-red mt-2 text-center'>{error}</p>}
-                            {loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
+                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
                         </form>
                     </div>
                 )}
