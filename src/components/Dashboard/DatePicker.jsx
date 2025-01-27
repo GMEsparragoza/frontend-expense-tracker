@@ -4,8 +4,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useDate } from '../../utils/DateContext';
 
 export const DatePickeador = () => {
-    const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 14))); // Últimas 2 semanas
-    const [endDate, setEndDate] = useState(new Date());
+    // Calcular el primer día del mes actual
+    const getStartOfMonth = () => {
+        const today = new Date();
+        return new Date(today.getFullYear(), today.getMonth(), 1); // Año, mes, día 1
+    };
+
+    const [startDate, setStartDate] = useState(getStartOfMonth());
+    const [endDate, setEndDate] = useState(new Date()); // Día actual
     const [showDatePicker, setShowDatePicker] = useState(false);
     const { setDateRange } = useDate();
 
@@ -13,8 +19,6 @@ export const DatePickeador = () => {
         const [start, end] = dates;
         setStartDate(start);
         setEndDate(end);
-        console.log('Start date:', start);
-        console.log('End date:', end);
     };
 
     const fetchData = () => {
@@ -22,6 +26,8 @@ export const DatePickeador = () => {
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
         });
+        console.log('Start date:', startDate);
+        console.log('End date:', endDate);
         setShowDatePicker(false); // Ocultar el menú flotante después de aplicar
     };
 

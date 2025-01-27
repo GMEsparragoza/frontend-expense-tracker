@@ -90,7 +90,7 @@ export const SumarySection = () => {
                 </div>
 
                 {/* Gastos Totales */}
-                <div className="bg-red text-white rounded-lg shadow-lg p-6 text-center">
+                <div className="bg-darkRed text-white rounded-lg shadow-lg p-6 text-center">
                     <h3 className="text-xl font-semibold mb-2">Total expenses</h3>
                     <p className="text-4xl font-bold">
                         ${data.totalExpenses ? data.totalExpenses.toFixed(2) : '0.00'}
