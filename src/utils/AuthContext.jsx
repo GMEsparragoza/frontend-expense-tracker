@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
                     try {
                         // Request a new Access Token using the Refresh Token
-                        await axios.post(`${REACT_APP_BACKEND_API_URL}/refresh-token`, {}, { withCredentials: true });
+                        await axios.post(`${REACT_APP_BACKEND_API_URL}/api/refresh-token`, {}, { withCredentials: true });
 
                         // Retry the original request after token refresh
                         return axios(originalRequest);

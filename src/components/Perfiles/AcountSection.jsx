@@ -126,7 +126,7 @@ export const AcountSection = () => {
 
     const handleDeleteAcount = (e) => {
         e.preventDefault();
-        axios.post(`${REACT_APP_BACKEND_API_URL}/api/delete-account`)
+        axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/delete-account`)
             .then(async (response) => {
                 if (response.data.twoFARequired) {
                     await handleDeleteCode();
@@ -155,7 +155,7 @@ export const AcountSection = () => {
             setStatus({ error: "Incorrect or missing code", loading: false });
         }
         try {
-            await axios.post(`${REACT_APP_BACKEND_API_URL}/api/confirm-delete-account`)
+            await axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-delete-account`)
             setUser(null); // Limpiar el estado del usuario
             mostrarAlerta({
                 tipo: true,
@@ -173,7 +173,7 @@ export const AcountSection = () => {
 
     return (
         <>
-            <div className='w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue border-t-4 border-darkSlate rounded-b-xl shadow-lg p-6 relative'>
+            <div className='w-9/10 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue border-t-4 border-darkSlate rounded-b-xl shadow-lg p-6 relative'>
                 <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>Account Options</h1>
                 <div className='flex justify-center my-4'>
                     {!user.two_fa && (

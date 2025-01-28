@@ -89,16 +89,25 @@ export const DatosSection = () => {
                 // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
                 mostrarAlerta({
                     tipo: true,
-                    titulo: "Sesion Iniciada",
-                    parrafo: "La verificación en dos pasos fue correcta"
+                    titulo: "Password updated",
+                    parrafo: "Two-step verification was successful"
                 });
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             })
             .catch(error => {
-                console.error('Error al verificar 2FA:', error);
-                setStatus({ error: error.response.data.error, loading: false });
+                if (error.status == 401) {
+                    mostrarAlerta({
+                        tipo: false,
+                        titulo: "Incorrect code",
+                        parrafo: "Please try again"
+                    });
+                }
+                else {
+                    console.error('Error al verificar 2FA:', error);
+                    setStatus({ error: error.response.data.error, loading: false });
+                }
             });
         setStatus({ ...status, loading: false });
     };
@@ -151,7 +160,7 @@ export const DatosSection = () => {
 
     return (
         <>
-            <div className='w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue rounded-t-xl shadow-lg p-6 mt-8 relative'>
+            <div className='w-9/10 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue rounded-t-xl shadow-lg p-6 mt-8 relative'>
                 <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>User profile</h1>
                 <div className='flex flex-col sm:flex-row items-center sm:items-start w-full'>
                     {/* Contenedor de la imagen (fuera del flujo con absolute) */}

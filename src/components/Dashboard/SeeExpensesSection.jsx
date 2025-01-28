@@ -125,9 +125,9 @@ export const SeeExpensesSection = () => {
 
     return (
         <div className="w-full sm:w-5/6 lg:w-3/4 xl:w-2/4 bg-darkBlue border-t-4 border-darkSlate rounded-b-xl shadow-lg p-6 mx-auto">
-            <h2 className="text-2xl font-semibold text-white mb-4 text-center">Expenses</h2>
+            <h2 className="text-3xl font-semibold text-white mb-4 text-center">Expenses</h2>
             {expenses.length === 0 ? (
-                <p className="text-white text-2xl font-semibold text-center">There are no charges for this date range.</p>
+                <p className="text-white text-2xl text-center">There are no charges for this date range.</p>
             ) : (
                 <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
                     <table className="min-w-full table-auto">
@@ -152,33 +152,38 @@ export const SeeExpensesSection = () => {
                                             day: 'numeric',
                                         })}
                                     </td>
-                                    <td className="px-4 py-2 flex justify-center space-x-2">
-                                        <button
-                                            onClick={() => { setMenus({ ...menus, updateExpense: true }), setUpdateExpenseData({ ...updateExpenseData, id: expense.id }) }}
-                                            className="font-semibold bg-lightBlue text-white py-1 px-3 rounded hover:bg-softBlue transition-colors duration-300"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setMenus({ ...menus, deleteExpense: true }),
+                                    <td className="px-4 py-2">
+                                        <div className="flex justify-center items-center h-full space-x-2">
+                                            <button
+                                                onClick={() => {
+                                                    setMenus({ ...menus, updateExpense: true });
+                                                    setUpdateExpenseData({ ...updateExpenseData, id: expense.id });
+                                                }}
+                                                className="font-semibold bg-lightBlue text-white py-1 px-3 rounded hover:bg-softBlue transition-colors duration-300"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setMenus({ ...menus, deleteExpense: true });
                                                     setDeleteExpenseData({
                                                         id: expense.id,
                                                         description: expense.description,
                                                         amount: expense.amount,
                                                         date: new Date(expense.date).toLocaleDateString('en-GB', {
-                                                            timeZone: 'UTC',  // Forzamos el uso de la zona horaria UTC
+                                                            timeZone: 'UTC',
                                                             year: 'numeric',
                                                             month: 'numeric',
                                                             day: 'numeric',
                                                         }),
-                                                        category: expense.category
-                                                    })
-                                            }}
-                                            className="font-semibold text-white py-1 px-3 rounded hover:bg-darkRed transition-colors duration-300"
-                                        >
-                                            Delete
-                                        </button>
+                                                        category: expense.category,
+                                                    });
+                                                }}
+                                                className="font-semibold text-white py-1 px-3 rounded hover:bg-darkRed transition-colors duration-300"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

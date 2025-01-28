@@ -86,7 +86,7 @@ export const NewTransactionSection = () => {
                             />
                         </div>
                         <div className='my-4'>
-                            <label className="block text-gray text-sm font-medium mb-1">Category</label>
+                            <label className="block text-gray text-sm font-medium mb-1">{formNewTransactionData.type == 'income' ? 'Source' : 'Category'}</label>
                             <input
                                 type="text"
                                 value={formNewTransactionData.category}
@@ -94,7 +94,7 @@ export const NewTransactionSection = () => {
                                     setFormNewTransactionData({ ...formNewTransactionData, category: e.target.value })
                                 }
                                 className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                placeholder="Category"
+                                placeholder={formNewTransactionData.type == 'income' ? 'Source' : 'Category'}
                             />
                         </div>
                         <div className='my-4'>

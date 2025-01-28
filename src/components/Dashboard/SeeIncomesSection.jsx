@@ -130,9 +130,9 @@ export const SeeIncomesSection = () => {
     return (
         <>
             <div className="w-full sm:w-5/6 lg:w-3/4 xl:w-2/4 bg-darkBlue border-t-4 border-darkSlate shadow-lg p-6 mx-auto">
-                <h2 className="text-2xl font-semibold text-white mb-4 text-center">Incomes</h2>
+                <h2 className="text-3xl font-semibold text-white mb-4 text-center">Incomes</h2>
                 {incomes.length === 0 ? (
-                    <p className="text-white text-2xl font-semibold text-center">There are no income in this date range.</p>
+                    <p className="text-white text-2xl text-center">There are no income in this date range.</p>
                 ) : (
                     <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
                         <table className="min-w-full table-auto">
@@ -146,45 +146,49 @@ export const SeeIncomesSection = () => {
                             </thead>
                             <tbody>
                                 {incomes.map((income) => (
-                                    <tr key={income.id} className='bg-lightDarkBlue'>
+                                    <tr key={income.id} className="bg-lightDarkBlue">
                                         <td className="px-4 py-2 text-white">{income.description}</td>
                                         <td className="px-4 py-2 text-center text-white">{income.amount}</td>
                                         <td className="px-4 py-2 text-center text-white">
-                                            {/* Convertir la fecha a UTC para evitar problemas de zona horaria */}
                                             {new Date(income.date).toLocaleDateString('en-GB', {
-                                                timeZone: 'UTC',  // Forzamos el uso de la zona horaria UTC
+                                                timeZone: 'UTC',
                                                 year: 'numeric',
                                                 month: 'numeric',
                                                 day: 'numeric',
                                             })}
                                         </td>
-                                        <td className="px-4 py-2 flex justify-center space-x-2">
-                                            <button
-                                                onClick={() => { setMenus({ ...menus, updateIncome: true }), setUpdateIncomeData({ ...updateIncomeData, id: income.id }) }}
-                                                className="font-semibold bg-lightBlue text-white py-1 px-3 rounded hover:bg-softBlue transition-colors duration-300"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setMenus({ ...menus, deleteIncome: true }),
-                                                    setDeleteIncomeData({
-                                                        id: income.id,
-                                                        description: income.description,
-                                                        amount: income.amount,
-                                                        date: new Date(income.date).toLocaleDateString('en-GB', {
-                                                            timeZone: 'UTC',  // Forzamos el uso de la zona horaria UTC
-                                                            year: 'numeric',
-                                                            month: 'numeric',
-                                                            day: 'numeric',
-                                                        }),
-                                                        category: income.category
-                                                    })
-                                                }}
-                                                className="font-semibold text-white py-1 px-3 rounded hover:bg-darkRed transition-colors duration-300"
-                                            >
-                                                Delete
-                                            </button>
+                                        <td className="px-4 py-2">
+                                            <div className="flex justify-center items-center h-full space-x-2">
+                                                <button
+                                                    onClick={() => {
+                                                        setMenus({ ...menus, updateIncome: true });
+                                                        setUpdateIncomeData({ ...updateIncomeData, id: income.id });
+                                                    }}
+                                                    className="font-semibold bg-lightBlue text-white py-1 px-3 rounded hover:bg-softBlue transition-colors duration-300"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setMenus({ ...menus, deleteIncome: true });
+                                                        setDeleteIncomeData({
+                                                            id: income.id,
+                                                            description: income.description,
+                                                            amount: income.amount,
+                                                            date: new Date(income.date).toLocaleDateString('en-GB', {
+                                                                timeZone: 'UTC',
+                                                                year: 'numeric',
+                                                                month: 'numeric',
+                                                                day: 'numeric',
+                                                            }),
+                                                            category: income.category,
+                                                        });
+                                                    }}
+                                                    className="font-semibold text-white py-1 px-3 rounded hover:bg-darkRed transition-colors duration-300"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
