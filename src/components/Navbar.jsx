@@ -23,7 +23,7 @@ export const Navbar = () => {
 
                     {/* Menú para pantallas grandes */}
                     <div className='hidden lg:flex space-x-4'>
-                        <Link to='/' className='px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Home</Link>
+                        <Link to='/' onClick={() => setMenuOpen(!menuOpen)} className='px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Home</Link>
                         {user ? (
                             <div className='flex space-x-4'>
                                 <Link to='/dashboard' className='px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Dashboard</Link>
@@ -36,14 +36,14 @@ export const Navbar = () => {
 
                     {/* Menú desplegable en pantallas pequeñas */}
                     <div className={`lg:hidden ${menuOpen ? 'block' : 'hidden'} absolute top-16 left-0 right-0 bg-gradient-to-r from-darkSlate to-lightSlate text-white space-y-4 py-4 px-6 rounded-lg shadow-lg`}>
-                        <Link to='/' className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Home</Link>
+                        <Link to='/' onClick={() => setMenuOpen(!menuOpen)} className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Home</Link>
                         {user ? (
                             <>
-                                <Link to='/dashboard' className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Dashboard</Link>
-                                <Link to='/perfil' className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Perfil</Link>
+                                <Link to='/dashboard' onClick={() => setMenuOpen(!menuOpen)} className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Dashboard</Link>
+                                <Link to='/perfil' onClick={() => setMenuOpen(!menuOpen)} className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Perfil</Link>
                             </>
                         ) : (
-                            <Link to='/login' className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Sign In</Link>
+                            <Link to='/login' onClick={() => setMenuOpen(!menuOpen)} className='block px-4 py-2 bg-darkBlue rounded-full hover:bg-lightBlue transition-colors duration-300'>Sign In</Link>
                         )}
                     </div>
                 </div>
