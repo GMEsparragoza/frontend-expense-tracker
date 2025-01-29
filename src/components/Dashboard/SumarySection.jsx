@@ -69,31 +69,31 @@ export const SumarySection = () => {
 
     return (
         <div className="w-full sm:w-5/6 lg:w-3/4 xl:w-2/4 bg-darkBlue border-t-4 border-darkSlate shadow-lg p-6 mx-auto">
-            <h1 className="text-3xl font-bold text-white mb-6 text-center">dashboard summary</h1>
+            <h1 className="text-3xl font-bold text-white mb-6 text-center">Dashboard Summary</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {/* Balance */}
-                <div className="bg-lightSlate text-white rounded-lg shadow-lg p-6 text-center">
+                <div className="bg-lightSlate text-white rounded-lg shadow-lg p-4 text-center">
                     <h3 className="text-xl font-semibold mb-2">Balance</h3>
                     <p className="text-4xl font-bold">
                         {data.balance >= 0
-                            ? `$${data.balance.toFixed(2)}`
-                            : `-$${Math.abs(data.balance).toFixed(2)}`}
+                            ? `$${data.balance}`
+                            : `-$${Math.abs(data.balance)}`}
                     </p>
                 </div>
 
                 {/* Ingresos Totales */}
-                <div className="bg-green text-white rounded-lg shadow-lg p-6 text-center">
+                <div className="bg-green text-white rounded-lg shadow-lg p-4 text-center">
                     <h3 className="text-xl font-semibold mb-2">Total Incomes</h3>
                     <p className="text-4xl font-bold">
-                        ${data.totalIncome ? data.totalIncome.toFixed(2) : '0.00'}
+                        ${data.totalIncome ? data.totalIncome : '0.00'}
                     </p>
                 </div>
 
                 {/* Gastos Totales */}
-                <div className="bg-darkRed text-white rounded-lg shadow-lg p-6 text-center">
-                    <h3 className="text-xl font-semibold mb-2">Total expenses</h3>
+                <div className="bg-darkRed text-white rounded-lg shadow-lg p-4 text-center">
+                    <h3 className="text-xl font-semibold mb-2">Total Expenses</h3>
                     <p className="text-4xl font-bold">
-                        ${data.totalExpenses ? data.totalExpenses.toFixed(2) : '0.00'}
+                        ${data.totalExpenses ? data.totalExpenses : '0.00'}
                     </p>
                 </div>
             </div>

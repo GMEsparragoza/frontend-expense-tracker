@@ -196,10 +196,10 @@ export const DatosSection = () => {
                 </div>
                 {/* Botones */}
                 <div className='flex justify-center my-4'>
-                    <button onClick={() => setMenus({ ...menus, informationMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={() => setMenus({ ...menus, informationMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate transition-colors mx-2 duration-300'>
                         Edit Information
                     </button>
-                    <button onClick={() => setMenus({ ...menus, passwordMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={() => setMenus({ ...menus, passwordMenu: true })} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate transition-colors mx-2 duration-300'>
                         Change Password
                     </button>
                 </div>
@@ -244,13 +244,13 @@ export const DatosSection = () => {
                                         setPasswordData({ password: "", newPassword: "", confirmPassword: "" });
                                         setStatus({ ...status, error: "" });
                                     }}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type='submit'
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Confirm
                                 </button>
@@ -301,13 +301,13 @@ export const DatosSection = () => {
                                         setInfoFormData({ username: "", name: "", lastName: "" });
                                         setStatus({ ...status, error: "" });
                                     }}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type='submit'
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Confirm
                                 </button>
@@ -335,14 +335,14 @@ export const DatosSection = () => {
                                 <button
                                     type='button'
                                     onClick={() => setMenus({ ...menus, imageMenu: false })}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type='button'
                                     onClick={handleImageUpload}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Upload
                                 </button>

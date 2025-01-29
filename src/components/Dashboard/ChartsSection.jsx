@@ -131,7 +131,7 @@ export const ChartsSection = ({ expenses, incomes }) => {
         <div className="w-full sm:w-5/6 lg:w-3/4 xl:w-2/4 bg-darkBlue border-t-4 border-darkSlate shadow-lg p-6 mx-auto">
             {/* Gráfico de Balance Mensual */}
             <div className="mb-6">
-                <h3 className="text-center text-xl font-semibold mb-4 text-white">Balance Mensual</h3>
+                <h3 className="text-center text-2xl font-semibold mb-4 text-white">Monthly Balance</h3>
                 <Bar data={balanceData} />
             </div>
 
@@ -140,14 +140,14 @@ export const ChartsSection = ({ expenses, incomes }) => {
                 {/* Mostrar el gráfico de Distribución de Gastos solo si hay datos */}
                 {Object.keys(categoryExpenses).length > 0 && (
                     <div className="w-full sm:w-1/2">
-                        <h3 className="text-center text-xl font-semibold my-4 text-white">
+                        <h3 className="text-center text-2xl font-semibold my-4 text-white">
                             Expenses distribution by category
                         </h3>
                         <Doughnut data={expenseDistributionData} />
                     </div>
                 )}
                 {Object.keys(categoryExpenses).length == 0 && (
-                    <h3 className="text-center text-xl font-semibold m-4 text-white">
+                    <h3 className="text-center text-2xl font-semibold m-4 text-white">
                         There are no expenses to display
                     </h3>
                 )}
@@ -155,7 +155,7 @@ export const ChartsSection = ({ expenses, incomes }) => {
                 {/* Mostrar el gráfico de Distribución de Ingresos solo si hay datos */}
                 {Object.keys(sourceIncomes).length > 0 && (
                     <div className="w-full sm:w-1/2">
-                        <h3 className="text-center text-xl font-semibold my-4 text-white">
+                        <h3 className="text-center text-2xl font-semibold my-4 text-white">
                             Incomes Distribution by source
                         </h3>
                         <Doughnut data={incomeDistributionData} />
@@ -163,7 +163,7 @@ export const ChartsSection = ({ expenses, incomes }) => {
                 )}
 
                 {Object.keys(sourceIncomes).length == 0 && (
-                    <h3 className="text-center text-xl font-semibold m-4 text-white">
+                    <h3 className="text-center text-2xl font-semibold m-4 text-white">
                         There are no incomes to display
                     </h3>
                 )}

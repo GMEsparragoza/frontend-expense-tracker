@@ -26,8 +26,6 @@ export const DatePickeador = () => {
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
         });
-        console.log('Start date:', startDate);
-        console.log('End date:', endDate);
         setShowDatePicker(false); // Ocultar el menú flotante después de aplicar
     };
 
@@ -35,7 +33,7 @@ export const DatePickeador = () => {
         <div className="relative">
             <button
                 onClick={() => setShowDatePicker(!showDatePicker)}
-                className="bg-lightBlue text-white py-2 px-4 rounded hover:bg-lightSlate"
+                className="font-semibold bg-lightBlue text-darkSlate py-2 px-4 rounded hover:bg-lightSlate transition-colors duration-300   "
             >
                 Select Dates
             </button>

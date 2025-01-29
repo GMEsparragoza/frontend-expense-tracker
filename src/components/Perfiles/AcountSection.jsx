@@ -177,26 +177,26 @@ export const AcountSection = () => {
                 <h1 className='text-5xl font-bold text-center text-lightBlue mb-6'>Account Options</h1>
                 <div className='flex justify-center my-4'>
                     {!user.two_fa && (
-                        <button onClick={() => handleSend2FACode()} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                        <button onClick={() => handleSend2FACode()} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate transition-colors mx-2 duration-300'>
                             Activate 2FA
                         </button>
                     )}
                     {user.two_fa && (
-                        <button onClick={() => handleSend2FACode()} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                        <button onClick={() => handleSend2FACode()} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate transition-colors mx-2 duration-300'>
                             Disable 2FA
                         </button>
                     )}
                 </div>
                 <div className='flex justify-center my-4'>
-                    <button onClick={() => setMenus({ ...menus, deleteMenu: true})} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={() => setMenus({ ...menus, deleteMenu: true})} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-darkRed hover:text-white transition-colors mx-2 duration-300'>
                         Delete account
                     </button>
-                    <button onClick={handleLogout} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate hover:text-darkBlue transition-colors mx-2'>
+                    <button onClick={handleLogout} className='bg-lightBlue text-darkBlue px-6 py-2 font-medium rounded-lg hover:bg-lightSlate transition-colors mx-2 duration-300'>
                         Log Out
                     </button>
                 </div>
             </div>
-            <div id='Menu-Change-Password'>
+            <div id='Menu-Verify-2fa'>
                 {menus.verifyMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={!user.two_fa ? ((e) => handleActivate2FA(e)) : ((e) => handleDisable2FA(e))}>
@@ -218,13 +218,13 @@ export const AcountSection = () => {
                                         setTwoFACodes({ ...twoFACodes, user2FACode: "" });
                                         setStatus({ error: "" });
                                     }}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type='submit'
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Confirm
                                 </button>
@@ -235,7 +235,7 @@ export const AcountSection = () => {
                     </div>
                 )}
             </div>
-            <div id='Menu-Change-Password'>
+            <div id='Menu-Delete-Account'>
                 {menus.deleteMenu && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleDeleteAcount(e)}>
@@ -250,13 +250,13 @@ export const AcountSection = () => {
                                         setMenus({ ...menus, deleteMenu: false });
                                         setStatus({ error: "" });
                                     }}
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate transition-colors duration-300'
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type='submit'
-                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
+                                    className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-darkRed hover:text-white transition-colors duration-300'
                                 >
                                     Confirm
                                 </button>
