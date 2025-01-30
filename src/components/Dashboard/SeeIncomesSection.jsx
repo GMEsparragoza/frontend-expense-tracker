@@ -70,8 +70,25 @@ export const SeeIncomesSection = () => {
                 setUpdatingStatus({ loading: false, error: 'Data to be entered is missing' })
                 return;
             }
+
+            // Normalizar la fecha al formato YYYY-MM-DD
+            let formattedDate = updateIncomeData.date.trim();
+            // Verificar si la fecha está en el formato DD-MM-YYYY o DD/MM/YYYY
+            if (/^\d{2}[-/]\d{2}[-/]\d{4}$/.test(formattedDate)) {
+                const [day, month, year] = formattedDate.split(/[-/]/);
+                formattedDate = `${year}-${month}-${day}`;
+            }
+            // Verificar si la fecha está en el formato correcto (YYYY-MM-DD)
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(formattedDate)) {
+                setUpdatingStatus({ loading: false, error: 'Incorrect format for date' })
+                return;
+            }
+            // Convertir la fecha a un objeto Date
+            const dateObject = new Date(formattedDate);
+
             const response = await axios.post(`${REACT_APP_BACKEND_API_URL}/transaction/updateIncome`, {
-                updateIncomeData
+                updateIncomeData,
+                date: dateObject
             })
             mostrarAlerta({
                 tipo: true,
@@ -81,8 +98,9 @@ export const SeeIncomesSection = () => {
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
-        } catch (err) {
-            setUpdatingStatus({ loading: false, error: err })
+        } catch (error) {
+            console.log(error.response.data.message)
+            setUpdatingStatus({ loading: false, error: error.response?.data.message })
         }
     };
 
@@ -101,8 +119,8 @@ export const SeeIncomesSection = () => {
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
-        } catch (err) {
-            setUpdatingStatus({ loading: false, error: err })
+        } catch (error) {
+            setUpdatingStatus({ loading: false, error: error.response.data.message })
         }
     };
 
@@ -110,7 +128,7 @@ export const SeeIncomesSection = () => {
     if (status.error) {
         return (
             <div className="w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue border-t-4 border-darkSlate shadow-lg p-6 relative">
-                <div className="text-center text-white">
+                <div className="text-center text-darkRed">
                     <h2 className="text-2xl font-semibold">Error loading income</h2>
                     <p>{status.error}</p>
                 </div>
@@ -207,7 +225,7 @@ export const SeeIncomesSection = () => {
                                         type="text"
                                         onChange={(e) => setUpdateIncomeData({ ...updateIncomeData, date: e.target.value })}
                                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                        placeholder="Enter Date (YYYY-MM-DD)"
+                                        placeholder="Enter Date"
                                     />
                                 </div>
                                 <div className='my-4'>
@@ -256,7 +274,7 @@ export const SeeIncomesSection = () => {
                                         Confirm
                                     </button>
                                 </div>
-                                {updatingStatus.error && <p className='text-red mt-2 text-center'>{updatingStatus.error}</p>}
+                                {updatingStatus.error && <p className='text-darkRed mt-2 text-center'>{updatingStatus.error}</p>}
                                 {updatingStatus.loading && <p className='text-white mt-2 text-center'>Updating Income...</p>}
                             </form>
                         </div>
@@ -267,13 +285,15 @@ export const SeeIncomesSection = () => {
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                             <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleDelete(e)}>
                                 <h2 className='text-2xl font-medium text-white mb-5 text-center'>Delete Income</h2>
-                                <p className="text-white text-center mb-5">
+                                <p className="text-white text-center mb-5 text-xl">
                                     Are you sure you want to delete the Income?
                                 </p>
-                                <label className="block text-gray text-sm font-medium mb-1">Date: {deleteIncomeData.date}</label>
-                                <label className="block text-gray text-sm font-medium mb-1">Description: {deleteIncomeData.description}</label>
-                                <label className="block text-gray text-sm font-medium mb-1">Category: {deleteIncomeData.category}</label>
-                                <label className="block text-gray text-sm font-medium mb-1">Amount: {deleteIncomeData.amount}</label>
+                                <div className='text-gray font-medium'>
+                                    <label className="block mb-1">Date: {deleteIncomeData.date}</label>
+                                    <label className="block mb-1">Description: {deleteIncomeData.description}</label>
+                                    <label className="block mb-1">Category: {deleteIncomeData.category}</label>
+                                    <label className="block mb-1">Amount: {deleteIncomeData.amount}</label>
+                                </div>
                                 <div className="flex justify-between items-center w-11/12 mx-auto space-x-4">
                                     <button
                                         type='button'
@@ -293,7 +313,7 @@ export const SeeIncomesSection = () => {
                                         Confirm
                                     </button>
                                 </div>
-                                {updatingStatus.error && <p className='text-red mt-2 text-center'>{updatingStatus.error}</p>}
+                                {updatingStatus.error && <p className='text-darkRed mt-2 text-center'>{updatingStatus.error}</p>}
                                 {updatingStatus.loading && <p className='text-white mt-2 text-center'>Deleting Income...</p>}
                             </form>
                         </div>

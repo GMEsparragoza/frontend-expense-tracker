@@ -13,7 +13,7 @@ const Alerta = () => {
         }
     }, [alerta, ocultarAlerta]);
 
-    const bgColor = alerta.tipo ? 'bg-darkBlue' : 'bg-red';
+    const bgColor = alerta.tipo ? 'bg-darkBlue' : 'bg-lightRed';
 
     return (
         <>

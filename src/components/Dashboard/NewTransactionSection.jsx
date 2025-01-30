@@ -21,9 +21,21 @@ export const NewTransactionSection = () => {
         e.preventDefault();
         setStatus({ loading: true, error: null });
         try {
-            // Convertir la variable date a un objeto Date
-            const dateObject = new Date(formNewTransactionData.date);
-
+            // Normalizar la fecha al formato YYYY-MM-DD
+            let formattedDate = formNewTransactionData.date.trim();
+            // Verificar si la fecha está en el formato DD-MM-YYYY o DD/MM/YYYY
+            if (/^\d{2}[-/]\d{2}[-/]\d{4}$/.test(formattedDate)) {
+                const [day, month, year] = formattedDate.split(/[-/]/);
+                formattedDate = `${year}-${month}-${day}`;
+            }
+            // Verificar si la fecha está en el formato correcto (YYYY-MM-DD)
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(formattedDate)) {
+                setStatus({ loading:false, error: 'Incorrect format for date'})
+                return;
+            }
+            // Convertir la fecha a un objeto Date
+            const dateObject = new Date(formattedDate);
+        
             // Enviar el objeto Date al backend
             const response = await axios.post(`${REACT_APP_BACKEND_API_URL}/transaction/addNewTransaction`, {
                 type: formNewTransactionData.type, // 'income' o 'expense'
@@ -32,21 +44,19 @@ export const NewTransactionSection = () => {
                 description: formNewTransactionData.description,
                 amount: formNewTransactionData.amount
             });
-
-            console.log(response.data);
+        
             mostrarAlerta({
                 tipo: true,
                 titulo: `${response.data.message}`,
                 parrafo: `The ${formNewTransactionData.type} has been added successfully`
             });
-
+        
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
         } catch (error) {
-            setStatus({ loading: false, error: error.response?.data?.message || 'Error adding transaction' });
+            setStatus({ loading: false, error: error.response?.data.message || 'Error adding transaction' });
         }
-        setStatus({ loading: false, ...status });
     };
 
     return (
@@ -127,8 +137,8 @@ export const NewTransactionSection = () => {
                         >
                             Add {formNewTransactionData.type === 'income' ? 'Income' : 'Expense'}
                         </button>
-                        <div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                        <div className='text-xl font-semibold'>
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Adding Transaction...</p>}
                         </div>
                     </form>

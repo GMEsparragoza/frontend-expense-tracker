@@ -77,8 +77,8 @@ export const SeeExpensesSection = () => {
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
-        } catch (err) {
-            setUpdatingStatus({ loading: false, error: err })
+        } catch (error) {
+            setUpdatingStatus({ loading: false, error: error.response.data.message })
         }
     };
 
@@ -97,15 +97,15 @@ export const SeeExpensesSection = () => {
             setTimeout(() => {
                 window.location.reload();
             }, 1500);
-        } catch (err) {
-            setUpdatingStatus({ loading: false, error: err })
+        } catch (error) {
+            setUpdatingStatus({ loading: false, error: error.response.data.message })
         }
     };
 
     if (status.error) {
         return (
             <div className="w-5/6 sm:w-4/5 xl:w-2/4 lg:w-3/4 bg-darkBlue border-t-4 border-darkSlate rounded-b-xl shadow-lg p-6 relative">
-                <div className="text-center text-white">
+                <div className="text-center text-darkRed">
                     <h2 className="text-2xl font-semibold">Error loading expenses</h2>
                     <p>{status.error}</p>
                 </div>
@@ -202,7 +202,7 @@ export const SeeExpensesSection = () => {
                                     type="text"
                                     onChange={(e) => setUpdateExpenseData({ ...updateExpenseData, date: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                    placeholder="Enter Date (YYYY-MM-DD)"
+                                    placeholder="Enter Date"
                                 />
                             </div>
                             <div className='my-4'>
@@ -251,7 +251,7 @@ export const SeeExpensesSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {updatingStatus.error && <p className='text-red mt-2 text-center'>{updatingStatus.error}</p>}
+                            {updatingStatus.error && <p className='text-darkRed mt-2 text-center'>{updatingStatus.error}</p>}
                             {updatingStatus.loading && <p className='text-white mt-2 text-center'>Updating Expense...</p>}
                         </form>
                     </div>
@@ -262,13 +262,15 @@ export const SeeExpensesSection = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleDelete(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Delete Expense</h2>
-                            <p className="text-white text-center mb-5">
+                            <p className="text-white text-center mb-5 text-xl">
                                 Are you sure you want to delete the Expense?
                             </p>
-                            <label className="block text-gray text-sm font-medium mb-1">Date: {deleteExpenseData.date}</label>
-                            <label className="block text-gray text-sm font-medium mb-1">Description: {deleteExpenseData.description}</label>
-                            <label className="block text-gray text-sm font-medium mb-1">Category: {deleteExpenseData.category}</label>
-                            <label className="block text-gray text-sm font-medium mb-1">Amount: {deleteExpenseData.amount}</label>
+                            <div className='text-gray font-medium'>
+                                <label className='block mb-1'>Date: {deleteExpenseData.date}</label>
+                                <label className="block mb-1">Description: {deleteExpenseData.description}</label>
+                                <label className="block mb-1">Category: {deleteExpenseData.category}</label>
+                                <label className="block mb-1">Amount: {deleteExpenseData.amount}</label>
+                            </div>
                             <div className="flex justify-between items-center w-11/12 mx-auto space-x-4">
                                 <button
                                     type='button'
@@ -288,7 +290,7 @@ export const SeeExpensesSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {updatingStatus.error && <p className='text-red mt-2 text-center'>{updatingStatus.error}</p>}
+                            {updatingStatus.error && <p className='text-darkRed mt-2 text-center'>{updatingStatus.error}</p>}
                             {updatingStatus.loading && <p className='text-white mt-2 text-center'>Deleting Expense...</p>}
                         </form>
                     </div>

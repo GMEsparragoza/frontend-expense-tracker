@@ -23,16 +23,17 @@ export const DatosSection = () => {
     })
     const [status, setStatus] = useState({
         loading: false,
-        error: ""
+        error: null
     })
     const [selectedImage, setSelectedImage] = useState(null);
     const [user2FACode, setUser2FACode] = useState(null);
     const { user } = useContext(AuthContext);
     const { mostrarAlerta } = useAlert();
+    const [showPasswords, setShowPasswords] = useState({ currentPassword: false, newPassword: false, confirmPassword: false })
 
     const handleChangePassword = (e) => {
         e.preventDefault();
-        setStatus({ loading: true, error: "" });
+        setStatus({ loading: true, error: null });
         if (!passwordData.password || !passwordData.newPassword || !passwordData.confirmPassword) {
             setStatus({ error: "All fields must be filled in", loading: false });
             return;
@@ -54,33 +55,31 @@ export const DatosSection = () => {
                 if (response.data.twoFARequired) {
                     mostrarAlerta({
                         tipo: true,
-                        titulo: "2FA Requerido",
-                        parrafo: "Se envio un código de verificación a su correo electrónico"
+                        titulo: "2FA Required",
+                        parrafo: `${response.data.message}`
                     });
                     setTimeout(() => {
-                        setStatus({ loading: false, ...status })
                         setMenus({ ...menus, passwordMenu: false, twoFACodeSent: true });
-                    }, 1000);
+                    }, 1500);
                 } else {
                     setPasswordData({ password: "", newPassword: "", confirmPassword: "" });
                     setMenus({ ...menus, passwordMenu: false });
                     mostrarAlerta({
                         tipo: true,
                         titulo: "Password updated",
-                        parrafo: "Password updated successfully"
+                        parrafo: `${response.data.message}`
                     })
                 }
+                setStatus({ loading: false, error: null })
             })
             .catch(err => {
-                console.error("Error al cambiar contraseña: ", err);
-                setStatus({ error: err.response.data.error, loading: false });
+                setStatus({ error: err.response.data.message, loading: false });
             })
-        setStatus({ ...status, loading: false });
     }
 
     const handleConfirmNewPassword = (e) => {
         e.preventDefault();
-        setStatus({ loading: true, error: "" });
+        setStatus({ loading: true, error: null });
         axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-change-password`, {
             code: user2FACode,
             newPassword: passwordData.newPassword
@@ -89,7 +88,7 @@ export const DatosSection = () => {
                 // Si el código es correcto, el backend creará el token y lo almacenará en la cookie
                 mostrarAlerta({
                     tipo: true,
-                    titulo: "Password updated",
+                    titulo: `${response.data.message}`,
                     parrafo: "Two-step verification was successful"
                 });
                 setTimeout(() => {
@@ -100,21 +99,24 @@ export const DatosSection = () => {
                 if (error.status == 401) {
                     mostrarAlerta({
                         tipo: false,
-                        titulo: "Incorrect code",
+                        titulo: `${error.response.data.message}`,
                         parrafo: "Please try again"
                     });
                 }
                 else {
-                    console.error('Error al verificar 2FA:', error);
-                    setStatus({ error: error.response.data.error, loading: false });
+                    mostrarAlerta({
+                        tipo: false,
+                        titulo: `${error.response.data.message}`,
+                        parrafo: `${error.response.data.error}`
+                    });
                 }
+                setStatus({ error: error.response.data.message, loading: false });
             });
-        setStatus({ ...status, loading: false });
     };
 
     const handleUpdateInfo = (e) => {
         e.preventDefault();
-        setStatus({ loading: true, error: "" });
+        setStatus({ loading: true, error: null });
         if (!infoFormData.username && !infoFormData.name && !infoFormData.lastName) {
             setStatus({ error: "All fields must be filled in", loading: false });
             return;
@@ -209,32 +211,38 @@ export const DatosSection = () => {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleChangePassword(e)}>
                             <h2 className='text-2xl font-medium text-white mb-5 text-center'>Change Password</h2>
-                            <div className='my-4'>
+                            <div className='my-4 relative'>
                                 <label className="block text-gray text-sm font-medium mb-1">Current password</label>
                                 <input
-                                    type="password"
+                                    type={showPasswords.currentPassword ? 'text' : 'password'}
                                     onChange={(e) => setPasswordData({ ...passwordData, password: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Current password"
                                 />
+                                <i className={`${showPasswords.currentPassword ? 'bx bx-show' : 'bx bx-hide'} absolute right-3 top-10 cursor-pointer text-white`}
+                                    onClick={() => setShowPasswords({ ...showPasswords, currentPassword: !showPasswords.currentPassword})}></i>
                             </div>
-                            <div className='my-4'>
+                            <div className='my-4 relative'>
                                 <label className="block text-gray text-sm font-medium mb-1">New Password</label>
                                 <input
-                                    type="password"
+                                    type={showPasswords.newPassword ? 'text' : 'password'}
                                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="New Password"
                                 />
+                                <i className={`${showPasswords.newPassword ? 'bx bx-show' : 'bx bx-hide'} absolute right-3 top-10 cursor-pointer text-white`}
+                                    onClick={() => setShowPasswords({ ...showPasswords, newPassword: !showPasswords.newPassword})}></i>
                             </div>
-                            <div className='my-4'>
+                            <div className='my-4 relative'>
                                 <label className="block text-gray text-sm font-medium mb-1">Confirm Password</label>
                                 <input
-                                    type="password"
+                                    type={showPasswords.confirmPassword ? 'text' : 'password'}
                                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Confirm New Password"
                                 />
+                                <i className={`${showPasswords.confirmPassword ? 'bx bx-show' : 'bx bx-hide'} absolute right-3 top-10 cursor-pointer text-white`}
+                                    onClick={() => setShowPasswords({ ...showPasswords, confirmPassword: !showPasswords.confirmPassword})}></i>
                             </div>
                             <div className="flex justify-between items-center w-11/12 mx-auto space-x-4">
                                 <button
@@ -255,7 +263,7 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Changing password...</p>}
                         </form>
                     </div>
@@ -312,7 +320,7 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Updating Info...</p>}
                         </form>
                     </div>
@@ -384,7 +392,7 @@ export const DatosSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Changing Password...</p>}
                         </form>
                     </div>

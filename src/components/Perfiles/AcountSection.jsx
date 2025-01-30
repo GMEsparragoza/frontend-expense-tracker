@@ -41,7 +41,6 @@ export const AcountSection = () => {
         setTimeout(() => {
             setMenus({ ...menus, verifyMenu: true });
         }, 1000);
-
     }
 
     const handleDeleteCode = async () => {
@@ -77,7 +76,7 @@ export const AcountSection = () => {
                     window.location.reload();
                 }, 1000);
             } catch (err) {
-                console.error('Error Activating Account:', err);
+                setStatus({ loading: false, error: err.response.data.message})
             }
         }
     }
@@ -101,12 +100,13 @@ export const AcountSection = () => {
                     window.location.reload();
                 }, 1000);
             } catch (err) {
-                console.error('Error Activating Account:', error);
+                setStatus({ loading: false, error: err.response.data.message})
             }
         }
     }
 
     const handleLogout = () => {
+        setStatus({ loading: true, error: null})
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/logout`)
             .then(() => {
                 setUser(null); // Limpiar el estado del usuario
@@ -120,12 +120,13 @@ export const AcountSection = () => {
                 }, 1000);
             })
             .catch(error => {
-                console.error('Error al cerrar sesión:', error);
+                setStatus({ loading: false, error: err.response.data.message || 'An error occurred while trying to log out'})
             });
     };
 
     const handleDeleteAcount = (e) => {
         e.preventDefault();
+        setStatus({ loading: true, error: null})
         axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/delete-account`)
             .then(async (response) => {
                 if (response.data.twoFARequired) {
@@ -144,30 +145,30 @@ export const AcountSection = () => {
                 }
             })
             .catch(error => {
-                console.error('Error al cerrar sesión:', error);
+                setStatus({ loading: false, error: error.response.data.message})
             });
     };
 
     const handleConfirmDeleteAcount = async (e) => {
         e.preventDefault();
-        setStatus({ loading: true, error: "" });
+        setStatus({ loading: true, error: null });
         if (!twoFACodes.user2FACode || twoFACodes.user2FACode != twoFACodes.verificationCode) {
             setStatus({ error: "Incorrect or missing code", loading: false });
         }
         try {
-            await axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-delete-account`)
+            const response = await axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-delete-account`)
             setUser(null); // Limpiar el estado del usuario
             mostrarAlerta({
                 tipo: true,
                 titulo: "Account Deleted",
-                parrafo: "The account was deleted successfully"
+                parrafo: `${response.data.message}`
             });
             setStatus({ loading: false });
             setTimeout(() => {
                 navigate('/login');
             }, 1000);
         } catch (err) {
-            console.error('Error Activating Account:', error);
+            setStatus({ loading: false, error: err.response.data.message });
         }
     }
 
@@ -229,7 +230,7 @@ export const AcountSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>{user.two_fa ? 'Disabling 2FA...' : 'Enabling 2FA...'}</p>}
                         </form>
                     </div>
@@ -261,13 +262,13 @@ export const AcountSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Deleting Account...</p>}
                         </form>
                     </div>
                 )}
             </div>
-            <div id='Menu-Change-Password'>
+            <div id='Menu-Confirm-Delete-Acount'>
                 {menus.twoFACodeSent && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                         <form className="w-full max-w-[500px] mx-auto bg-darkSlate p-6 rounded-lg relative z-40" onSubmit={(e) => handleConfirmDeleteAcount(e)}>
@@ -300,7 +301,7 @@ export const AcountSection = () => {
                                     Confirm
                                 </button>
                             </div>
-                            {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                            {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                             {status.loading && <p className='text-white mt-2 text-center'>Deleting Account...</p>}
                         </form>
                     </div>

@@ -17,6 +17,7 @@ export const LoginForm = () => {
     const [twoFACode, setTwoFACode] = useState(null);
     const { mostrarAlerta } = useAlert();
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false)
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
@@ -39,7 +40,7 @@ export const LoginForm = () => {
                     });
                     setTimeout(() => {
                         setTwoFAMenu(true);
-                        setStatus({ loading: false, ...status });
+                        setStatus({ loading: false, error: null });
                     }, 1500);
                 } else {
                     mostrarAlerta({
@@ -53,17 +54,7 @@ export const LoginForm = () => {
                 }
             })
             .catch(error => {
-                if (error.response) {
-                    console.error('Error en la respuesta:', error.response.data);
-                    setStatus({ loading: false, error: error.response.data.message });
-                } else if (error.request) {
-                    console.error('Error en la solicitud:', error.request);
-                    setStatus({ loading: false, error: error.request });
-                } else {
-                    console.error('Error general:', error.message);
-                    setStatus({ loading: false, error: error.message });
-                }
-                setStatus({ loading: false, ...status });
+                setStatus({ loading: false, error: error.response?.data?.message })
             });
     }
 
@@ -104,18 +95,20 @@ export const LoginForm = () => {
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your email" />
                 </div>
-                <div className='my-4'>
+                <div className='my-4 relative'>
                     <label className="block text-gray text-sm font-medium mb-1">Password</label>
-                    <input type="password"
+                    <input type={showPassword ? 'text' : 'password'}
                         value={formLogin.password}
                         onChange={(e) => setFormLogin({ ...formLogin, password: e.target.value })}
                         className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                         placeholder="Enter your password" />
+                    <i className={`${showPassword ? 'bx bx-show' : 'bx bx-hide'} absolute right-3 top-10 cursor-pointer text-white`}
+                        onClick={() => setShowPassword(!showPassword)}></i>
                 </div>
                 <button type='button' onClick={() => navigate('/reset-password')} className='w-full text-lightBlue py-2 font-medium rounded mt-6 transition-colors'>Forgot your password?</button>
                 <button type='submit' className='w-full bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'>Sign In</button>
                 {!twoFAMenu && (<div>
-                    {status.error && <p className='text-red mt-2 text-center'>{status.error}</p>}
+                    {status.error && <p className='text-darkRed mt-2 text-center'>{status.error}</p>}
                     {status.loading && <p className='text-white mt-2 text-center'>Loggin in...</p>}
                 </div>)}
             </form>
@@ -138,7 +131,8 @@ export const LoginForm = () => {
                                     type='button'
                                     onClick={() => {
                                         setTwoFAMenu(false)
-                                        setStatus({ ...status, error: null })
+                                        setStatus({ loading: false, error: null })
+                                        setFormLogin({ email: "", password: "" })
                                     }}
                                     className='w-1/2 bg-lightBlue text-darkBlue py-2 font-medium rounded mt-6 hover:bg-lightSlate hover:text-darkBlue transition-colors'
                                 >
