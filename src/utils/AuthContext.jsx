@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // Fetch the user data from the backend
-        axios.get(`${REACT_APP_BACKEND_API_URL}/api/auth`, { withCredentials: true })
+        axios.post(`${REACT_APP_BACKEND_API_URL}/api/auth`, {}, { withCredentials: true })
             .then(response => {
                 setUser(response.data.user);
                 setLoading(false);
