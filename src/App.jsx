@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/DashboardPage';
@@ -12,6 +12,7 @@ import { AlertProvider } from './utils/AlertContext';
 import Alerta from './components/Alerta';
 import ResetPassword from './pages/ResetPassword';
 import { DateProvider } from './utils/DateContext';
+import { NotFound } from './pages/NotFound';
 
 axios.defaults.withCredentials = true;
 
@@ -44,7 +45,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AlertProvider>
