@@ -1,6 +1,14 @@
 import React from "react";
+import { AuthContext } from "../utils/AuthContext";
+import { Navigate } from "react-router-dom";
 
 export const ErrorFetch = () => {
+    const { resError } = useContext(AuthContext);
+
+    if(!resError) {
+        return <Navigate to="/" replace />
+    }
+
     return (
         <div className="flex flex-col items-center justify-center h-screen bg-darkSlate text-gray">
             <h1 className="text-6xl font-bold text-lightBlue">429</h1>
