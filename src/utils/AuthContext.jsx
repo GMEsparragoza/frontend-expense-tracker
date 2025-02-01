@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshUser, setRefreshUser] = useState(false); // Nueva variable para forzar actualización
+    const [resError, setResError] = useState(false);
 
     useEffect(() => {
         // La condición ahora se ejecuta solo si user es null o refreshUser es true
@@ -19,6 +20,9 @@ export const AuthProvider = ({ children }) => {
                     setLoading(false);
                 })
                 .catch(error => {
+                    if (error.response && error.response.status == 429){
+                        setResError(true);
+                    }
                     setUser(null);
                     setLoading(false);
                 })
@@ -29,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }, [user, refreshUser]); // Dependencias: cambiará cuando user o refreshUser cambien
 
     return (
-        <AuthContext.Provider value={{ user, setUser, loading, setRefreshUser }}>
+        <AuthContext.Provider value={{ user, setUser, loading, setRefreshUser, resError }}>
             {children}
         </AuthContext.Provider>
     );

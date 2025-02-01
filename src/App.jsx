@@ -13,6 +13,7 @@ import Alerta from './components/Alerta';
 import ResetPassword from './pages/ResetPassword';
 import { DateProvider } from './utils/DateContext';
 import { NotFound } from './pages/NotFound';
+import { ErrorFetch } from './pages/ErrorFetch'
 
 axios.defaults.withCredentials = true;
 
@@ -46,6 +47,7 @@ function App() {
               }
             />
             <Route path="*" element={<NotFound />} />
+            <Route path="/Error-Page-429" element={<ErrorFetch />} />
           </Routes>
         </BrowserRouter>
       </AlertProvider>
