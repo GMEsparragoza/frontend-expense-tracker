@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import { DateProvider } from './utils/DateContext';
 import { NotFound } from './pages/NotFound';
 import { ErrorFetch } from './pages/ErrorFetch'
+import { AuthContext } from './utils/AuthContext';
 
 axios.defaults.withCredentials = true;
 
