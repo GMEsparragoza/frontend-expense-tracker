@@ -20,7 +20,7 @@ export const AcountSection = () => {
         verificationCode: "",
         user2FACode: ""
     })
-    const { user, setUser } = useContext(AuthContext);
+    const { user, setUser, setRefreshUser } = useContext(AuthContext);
     const { mostrarAlerta } = useAlert();
     const navigate = useNavigate();
 
@@ -110,6 +110,7 @@ export const AcountSection = () => {
         axios.post(`${REACT_APP_BACKEND_API_URL}/api/logout`)
             .then(() => {
                 setUser(null); // Limpiar el estado del usuario
+                setRefreshUser(true)
                 mostrarAlerta({
                     tipo: true,
                     titulo: "Session closed",
@@ -134,6 +135,7 @@ export const AcountSection = () => {
                 }
                 else {
                     setUser(null); // Limpiar el estado del usuario
+                    setRefreshUser(true)
                     mostrarAlerta({
                         tipo: true,
                         titulo: "Account Deleted",
@@ -158,6 +160,7 @@ export const AcountSection = () => {
         try {
             const response = await axios.post(`${REACT_APP_BACKEND_API_URL}/profiles/confirm-delete-account`)
             setUser(null); // Limpiar el estado del usuario
+            setRefreshUser(true)
             mostrarAlerta({
                 tipo: true,
                 titulo: "Account Deleted",

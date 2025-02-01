@@ -27,7 +27,7 @@ export const DatosSection = () => {
     })
     const [selectedImage, setSelectedImage] = useState(null);
     const [user2FACode, setUser2FACode] = useState(null);
-    const { user } = useContext(AuthContext);
+    const { user, setRefreshUser } = useContext(AuthContext);
     const { mostrarAlerta } = useAlert();
     const [showPasswords, setShowPasswords] = useState({ currentPassword: false, newPassword: false, confirmPassword: false })
 
@@ -93,7 +93,7 @@ export const DatosSection = () => {
                 });
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 1500);
             })
             .catch(error => {
                 if (error.status == 401) {
@@ -131,6 +131,7 @@ export const DatosSection = () => {
                 setInfoFormData({ username: "", name: "", lastName: "" });
                 setMenus({ ...menus, informationMenu: false });
                 setStatus({ loading: false, error: "" });
+                setRefreshUser(true)
                 window.location.reload();
             })
             .catch(err => {
@@ -154,6 +155,7 @@ export const DatosSection = () => {
 
             console.log('Image uploaded successfully:', response.data);
             setMenus({ ...menus, imageMenu: false });
+            setRefreshUser(true);
             window.location.reload();
         } catch (error) {
             console.error('Error uploading image:', error);

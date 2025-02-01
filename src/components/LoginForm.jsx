@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { REACT_APP_BACKEND_API_URL } from '../utils/config'
 import { useAlert } from '../utils/AlertContext'
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../utils/AuthContext';
 
 export const LoginForm = () => {
     const [formLogin, setFormLogin] = useState({
@@ -18,6 +19,7 @@ export const LoginForm = () => {
     const { mostrarAlerta } = useAlert();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false)
+    const { setRefreshUser } = useContext(AuthContext);
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
@@ -49,6 +51,7 @@ export const LoginForm = () => {
                         parrafo: "Se inicio sesion correctamente"
                     });
                     setTimeout(() => {
+                        setRefreshUser(true)
                         window.location.reload();
                     }, 1500);
                 }
@@ -74,6 +77,7 @@ export const LoginForm = () => {
                     parrafo: "La verificación en dos pasos fue correcta"
                 });
                 setTimeout(() => {
+                    setRefreshUser(true)
                     window.location.reload();
                 }, 1500);
             })
