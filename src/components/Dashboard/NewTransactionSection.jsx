@@ -92,7 +92,7 @@ export const NewTransactionSection = () => {
                                     setFormNewTransactionData({ ...formNewTransactionData, date: e.target.value })
                                 }
                                 className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                placeholder="Date (YYYY-MM-DD)"
+                                placeholder="Enter Date"
                             />
                         </div>
                         <div className='my-4'>
@@ -104,7 +104,7 @@ export const NewTransactionSection = () => {
                                     setFormNewTransactionData({ ...formNewTransactionData, category: e.target.value })
                                 }
                                 className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                placeholder={formNewTransactionData.type == 'income' ? 'Source' : 'Category'}
+                                placeholder={`Enter ${formNewTransactionData.type == 'income' ? 'Source' : 'Category'}`}
                             />
                         </div>
                         <div className='my-4'>
@@ -116,7 +116,7 @@ export const NewTransactionSection = () => {
                                     setFormNewTransactionData({ ...formNewTransactionData, description: e.target.value })
                                 }
                                 className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                placeholder="Description"
+                                placeholder="Enter Description"
                             />
                         </div>
                         <div className='my-4'>
@@ -128,7 +128,7 @@ export const NewTransactionSection = () => {
                                     setFormNewTransactionData({ ...formNewTransactionData, amount: e.target.value })
                                 }
                                 className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
-                                placeholder="Amount"
+                                placeholder="Enter Amount"
                             />
                         </div>
                         <button

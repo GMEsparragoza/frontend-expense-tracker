@@ -76,8 +76,8 @@ export const SumarySection = () => {
                     <h3 className="text-xl font-semibold mb-2">Balance</h3>
                     <p className="text-4xl font-bold">
                         {data.balance >= 0
-                            ? `$${data.balance}`
-                            : `-$${Math.abs(data.balance)}`}
+                            ? `$${parseFloat(data.balance.toFixed(2))}`
+                            : `-$${parseFloat(Math.abs(data.balance).toFixed(2))}`}
                     </p>
                 </div>
 
@@ -85,7 +85,7 @@ export const SumarySection = () => {
                 <div className="bg-green text-white rounded-lg shadow-lg p-4 text-center">
                     <h3 className="text-xl font-semibold mb-2">Total Incomes</h3>
                     <p className="text-4xl font-bold">
-                        ${data.totalIncome ? data.totalIncome : '0.00'}
+                        ${data.totalIncome ? parseFloat(data.totalIncome.toFixed(2)) : '0.00'}
                     </p>
                 </div>
 
@@ -93,7 +93,7 @@ export const SumarySection = () => {
                 <div className="bg-darkRed text-white rounded-lg shadow-lg p-4 text-center">
                     <h3 className="text-xl font-semibold mb-2">Total Expenses</h3>
                     <p className="text-4xl font-bold">
-                        ${data.totalExpenses ? data.totalExpenses : '0.00'}
+                        ${data.totalExpenses ? parseFloat(data.totalExpenses.toFixed(2)) : '0.00'}
                     </p>
                 </div>
             </div>

@@ -200,6 +200,7 @@ export const SeeExpensesSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Date</label>
                                 <input
                                     type="text"
+                                    value={updateExpenseData.date}
                                     onChange={(e) => setUpdateExpenseData({ ...updateExpenseData, date: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter Date"
@@ -209,6 +210,7 @@ export const SeeExpensesSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Category</label>
                                 <input
                                     type="text"
+                                    value={updateExpenseData.category}
                                     onChange={(e) => setUpdateExpenseData({ ...updateExpenseData, category: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter Category"
@@ -218,6 +220,7 @@ export const SeeExpensesSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Description</label>
                                 <input
                                     type="text"
+                                    value={updateExpenseData.description}
                                     onChange={(e) => setUpdateExpenseData({ ...updateExpenseData, description: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter Description"
@@ -227,6 +230,7 @@ export const SeeExpensesSection = () => {
                                 <label className="block text-gray text-sm font-medium mb-1">Amount</label>
                                 <input
                                     type="number"
+                                    value={updateExpenseData.amount}
                                     onChange={(e) => setUpdateExpenseData({ ...updateExpenseData, amount: e.target.value })}
                                     className="w-full border-b-2 border-lightSlate bg-darkSlate outline-none px-3 py-2 text-white placeholder-lightSlate focus:border-transparent"
                                     placeholder="Enter Amount"
