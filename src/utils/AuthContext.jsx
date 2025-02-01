@@ -8,11 +8,11 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [refreshUser, setRefreshUser] = useState(true); // Nueva variable para forzar actualización
+    const [refreshUser, setRefreshUser] = useState(false); // Nueva variable para forzar actualización
 
     useEffect(() => {
-        // Ejecutar la petición solo si refreshUser es true o si user es null
-        if (refreshUser || !user) {
+        // La condición ahora se ejecuta solo si user es null o refreshUser es true
+        if (!user || refreshUser) {
             axios.post(`${REACT_APP_BACKEND_API_URL}/api/auth`, {}, { withCredentials: true })
                 .then(response => {
                     setUser(response.data.user);
@@ -22,9 +22,11 @@ export const AuthProvider = ({ children }) => {
                     setUser(null);
                     setLoading(false);
                 })
-                .finally(setRefreshUser(false));
+                .finally(() => {
+                    setRefreshUser(false); // Resetear refreshUser después de la petición
+                });
         }
-    }, [refreshUser]); // La petición solo se ejecutará si refreshUser cambia
+    }, [user, refreshUser]); // Dependencias: cambiará cuando user o refreshUser cambien
 
     return (
         <AuthContext.Provider value={{ user, setUser, loading, setRefreshUser }}>
